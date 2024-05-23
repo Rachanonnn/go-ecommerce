@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"context"
+	"fmt"
 	. "go-ecommerce/domain/datasources"
 	"go-ecommerce/domain/entities"
 	"os"
@@ -21,6 +22,9 @@ type productRepository struct {
 type IProductRepository interface {
 	GetAllProduct() ([]entities.ProductDataFormat, error)
 	InsertNewProduct(data *entities.ProductDataFormat) bool
+	FindProductByID(productID string) (*entities.ProductDataFormat, error)
+	UpdateProduct(productID string, data *entities.ProductDataFormat) error
+	DeleteProduct(productID string) error
 }
 
 func NewProductRepository(db *MongoDB) IProductRepository {
@@ -53,10 +57,40 @@ func (repo productRepository) GetAllProduct() ([]entities.ProductDataFormat, err
 	return pack, nil
 }
 
+func (repo productRepository) FindProductByID(productID string) (*entities.ProductDataFormat, error) {
+	result := entities.ProductDataFormat{}
+
+	product := repo.Collection.FindOne(repo.Context, bson.M{"product_id": productID}).Decode(&result)
+
+	fmt.Println(result)
+
+	if product == mongo.ErrNoDocuments {
+		return nil, fmt.Errorf("Product not found")
+	}
+
+	return &result, nil
+}
+
 func (repo productRepository) InsertNewProduct(data *entities.ProductDataFormat) bool {
 	if _, err := repo.Collection.InsertOne(repo.Context, data); err != nil {
 		fiberlog.Errorf("Products -> InsertNewProduct: %s \n", err)
 		return false
 	}
 	return true
+}
+
+func (repo productRepository) UpdateProduct(productID string, data *entities.ProductDataFormat) error {
+	_, err := repo.Collection.UpdateOne(repo.Context, bson.M{"product_id": productID}, bson.M{"$set": data})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (repo productRepository) DeleteProduct(productID string) error {
+	_, err := repo.Collection.DeleteOne(repo.Context, bson.M{"product_id": productID})
+	if err != nil {
+		return err
+	}
+	return nil
 }
