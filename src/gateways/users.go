@@ -90,13 +90,3 @@ func (h HTTPGateway) DeleteUser(ctx *fiber.Ctx) error {
 
 	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "success"})
 }
-
-// func (h HTTPGateway) getAuthCallback(ctx *fiber.Ctx) error {
-// 	user, err := gothic.CompleteUserAuth()
-
-// 	if err != nil {
-// 		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: err.Error()})
-// 	}
-
-// 	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "success", Data: user})
-// }

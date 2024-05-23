@@ -77,10 +77,12 @@ func main() {
 	mongodb := ds.NewMongoDB(10)
 
 	userMongo := repo.NewUsersRepository(mongodb)
+	productMongo := repo.NewProductRepository(mongodb)
 
 	sv0 := sv.NewUsersService(userMongo)
+	sv1 := sv.NewProductService(productMongo)
 
-	gw.NewHTTPGateway(app, sv0)
+	gw.NewHTTPGateway(app, sv0, sv1)
 
 	PORT := os.Getenv("DB_PORT_LOGIN")
 
