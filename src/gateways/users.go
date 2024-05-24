@@ -3,6 +3,7 @@ package gateways
 import (
 	"go-ecommerce/domain/entities"
 	"log"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -86,6 +87,106 @@ func (h HTTPGateway) DeleteUser(ctx *fiber.Ctx) error {
 
 	if err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "cannot delete user data"})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "success"})
+}
+
+func (h HTTPGateway) GetAddressByID(ctx *fiber.Ctx) error {
+
+	params := ctx.Queries()
+
+	if len(params) <= 0 {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "user id not fill"})
+	}
+
+	user_id := params["id"]
+
+	data, err := h.AddressService.GetAddressByID(user_id)
+
+	if err != nil {
+		return ctx.Status(fiber.StatusForbidden).JSON(entities.ResponseModel{Message: "cannot get address data"})
+	}
+	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "success", Data: data})
+}
+
+func (h HTTPGateway) CreateNewAddress(ctx *fiber.Ctx) error {
+
+	var bodyData entities.AddressDataFormat
+	if err := ctx.BodyParser(&bodyData); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseMessage{Message: "invalid json body"})
+	}
+
+	params := ctx.Queries()
+	if len(params) <= 0 {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "user id not fill"})
+	}
+
+	user_id := params["id"]
+
+	status := h.AddressService.InsertNewAddress(user_id, &bodyData)
+	log.Println("status after ", status)
+
+	if !status {
+		return ctx.Status(fiber.StatusForbidden).JSON(entities.ResponseModel{Message: "cannot insert new address account."})
+	}
+	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "success"})
+}
+
+func (h HTTPGateway) UpdateAddress(ctx *fiber.Ctx) error {
+	addressData := new(entities.AddressDataFormat)
+
+	err := ctx.BodyParser(&addressData)
+
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "invalid json body"})
+	}
+
+	params := ctx.Queries()
+
+	if len(params) <= 0 {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "address id not fill"})
+	}
+
+	user_id := params["id"]
+	index := params["index"]
+
+	i, err := strconv.Atoi(index)
+
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "invalid address index"})
+	}
+
+	err = h.AddressService.UpdateAddress(user_id, i, addressData)
+
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "cannot update address data"})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "success", Data: addressData})
+}
+
+func (h HTTPGateway) DeleteAddress(ctx *fiber.Ctx) error {
+
+	params := ctx.Queries()
+
+	if len(params) <= 0 {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "user id not fill"})
+	}
+
+	user_id := params["id"]
+	index := params["index"]
+
+	i, err := strconv.Atoi(index)
+
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "invalid address index"})
+	}
+
+	err = h.AddressService.DeleteAddress(user_id, i)
+
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "cannot update address data"})
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "success"})

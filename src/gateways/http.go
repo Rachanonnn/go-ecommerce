@@ -9,13 +9,16 @@ import (
 type HTTPGateway struct {
 	UserService    service.IUsersService
 	ProductService service.IProductService
+	AddressService service.IAddressService
 }
 
-func NewHTTPGateway(app *fiber.App, users service.IUsersService, product service.IProductService) {
+func NewHTTPGateway(app *fiber.App, users service.IUsersService, product service.IProductService, address service.IAddressService) {
 	gateway := &HTTPGateway{
 		UserService:    users,
 		ProductService: product,
+		AddressService: address,
 	}
 
+	GatewayProducts(*gateway, app)
 	GatewayUsers(*gateway, app)
 }
