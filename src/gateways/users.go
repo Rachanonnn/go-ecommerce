@@ -112,7 +112,7 @@ func (h HTTPGateway) GetAddressByID(ctx *fiber.Ctx) error {
 
 func (h HTTPGateway) CreateNewAddress(ctx *fiber.Ctx) error {
 
-	var bodyData entities.AddressDataFormat
+	var bodyData entities.AddressData
 	if err := ctx.BodyParser(&bodyData); err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseMessage{Message: "invalid json body"})
 	}
@@ -134,7 +134,7 @@ func (h HTTPGateway) CreateNewAddress(ctx *fiber.Ctx) error {
 }
 
 func (h HTTPGateway) UpdateAddress(ctx *fiber.Ctx) error {
-	addressData := new(entities.AddressDataFormat)
+	addressData := new(entities.AddressData)
 
 	err := ctx.BodyParser(&addressData)
 

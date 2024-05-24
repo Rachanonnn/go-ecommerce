@@ -27,3 +27,11 @@ func GatewayProducts(gateway HTTPGateway, app *fiber.App) {
 	apiProduct.Put("/update_product", gateway.UpdateProduct)
 	apiProduct.Delete("/delete_product", gateway.DeleteProduct)
 }
+
+func GatewayGoogle(gateway HTTPGateway, app *fiber.App) {
+
+	apiGoogle := app.Group("/api/v1")
+
+	apiGoogle.Get("/google", gateway.GoogleAuthentication)
+	apiGoogle.Get("/google_callback", gateway.GoogleCallback)
+}

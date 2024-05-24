@@ -4,27 +4,33 @@ import (
 	"fmt"
 	"go-ecommerce/domain/entities"
 	"go-ecommerce/domain/repositories"
+
+	"github.com/gofiber/fiber/v2/log"
 )
 
 type addressService struct {
 	AddressRepository repositories.IAddressRepository
+	UsersRepository   repositories.IUsersRepository
 }
 
 type IAddressService interface {
-	GetAddressByID(userID string) ([]entities.AddressDataFormat, error)
-	InsertNewAddress(userID string, data *entities.AddressDataFormat) bool
-	UpdateAddress(userID string, index int, data *entities.AddressDataFormat) error
+	GetAddressByID(userID string) (*entities.AddressDataFormat, error)
+	InsertNewAddress(userID string, data *entities.AddressData) bool
+	UpdateAddress(userID string, index int, data *entities.AddressData) error
 	DeleteAddress(userID string, index int) error
 }
 
-func NewAddressService(repo0 repositories.IAddressRepository) IAddressService {
+func NewAddressService(repo0 repositories.IAddressRepository, repo1 repositories.IUsersRepository) IAddressService {
 	return &addressService{
 		AddressRepository: repo0,
+		UsersRepository:   repo1,
 	}
 }
 
-func (sv addressService) GetAddressByID(userID string) ([]entities.AddressDataFormat, error) {
+func (sv addressService) GetAddressByID(userID string) (*entities.AddressDataFormat, error) {
 	addressData, err := sv.AddressRepository.FindAddressByUserID(userID)
+
+	log.Info(addressData)
 
 	if err != nil || addressData == nil {
 		return nil, err
@@ -33,32 +39,29 @@ func (sv addressService) GetAddressByID(userID string) ([]entities.AddressDataFo
 	return addressData, nil
 }
 
-func (sv addressService) InsertNewAddress(userID string, data *entities.AddressDataFormat) bool {
+func (sv addressService) InsertNewAddress(userID string, data *entities.AddressData) bool {
 
-	addressData, err := sv.GetAddressByID(userID)
+	addresses, err := sv.GetAddressByID(userID)
 
 	if err != nil {
 		return false
 	}
 
-	if len(addressData) >= 3 {
+	if len(addresses.AddressData) >= 3 {
 		return false
 	}
 
 	status := sv.AddressRepository.InsertNewAddress(userID, data)
+
 	return status
 }
 
-func (sv addressService) UpdateAddress(userID string, index int, data *entities.AddressDataFormat) error {
+func (sv addressService) UpdateAddress(userID string, index int, data *entities.AddressData) error {
 
-	addressData, err := sv.GetAddressByID(userID)
+	_, err := sv.GetAddressByID(userID)
 
 	if err != nil {
 		return err
-	}
-
-	if index < 0 || index >= len(addressData) {
-		return fmt.Errorf("invalid index")
 	}
 
 	err = sv.AddressRepository.UpdateAddress(userID, index, data)
@@ -67,18 +70,22 @@ func (sv addressService) UpdateAddress(userID string, index int, data *entities.
 		return err
 	}
 
-	return err
+	return nil
 }
 
 func (sv addressService) DeleteAddress(userID string, index int) error {
 
-	_, err := sv.GetAddressByID(userID)
+	data, err := sv.GetAddressByID(userID)
 
 	if err != nil {
 		return err
 	}
 
-	err = sv.AddressRepository.DeleteAddress(userID, index)
+	if len(data.AddressData) <= 1 {
+		return fmt.Errorf("cannot delete last address")
+	}
+
+	err = sv.AddressRepository.PushAddress(data, index)
 
 	if err != nil {
 		return err

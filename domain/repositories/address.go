@@ -17,10 +17,11 @@ type addressRepository struct {
 }
 
 type IAddressRepository interface {
-	FindAddressByUserID(userID string) ([]entities.AddressDataFormat, error)
-	InsertNewAddress(userID string, data *entities.AddressDataFormat) bool
-	UpdateAddress(userID string, index int, newData *entities.AddressDataFormat) error
-	DeleteAddress(userID string, index int) error
+	InsertDefaultAddress(userID string) error
+	FindAddressByUserID(userID string) (*entities.AddressDataFormat, error)
+	InsertNewAddress(userID string, data *entities.AddressData) bool
+	UpdateAddress(userID string, index int, newData *entities.AddressData) error
+	PushAddress(data *entities.AddressDataFormat, index int) error
 }
 
 func NewAddressRepository(db *MongoDB) IAddressRepository {
@@ -30,78 +31,87 @@ func NewAddressRepository(db *MongoDB) IAddressRepository {
 	}
 }
 
-func (repo addressRepository) InsertNewAddress(userID string, data *entities.AddressDataFormat) bool {
+func (repo addressRepository) InsertDefaultAddress(userID string) error {
 
-	result := entities.UserDataFormat{}
-
-	user := repo.Collection.FindOne(repo.Context, bson.M{"user_id": userID}).Decode(&result)
-
-	if user == mongo.ErrNoDocuments {
-		return false
-	}
-
-	result.Addresses = append(result.Addresses, *data)
-
-	_, err := repo.Collection.UpdateOne(repo.Context, bson.M{"user_id": userID}, bson.M{"$set": result})
-
-	if err != nil {
-		return false
-	}
-
-	return true
-}
-
-func (repo addressRepository) FindAddressByUserID(userID string) ([]entities.AddressDataFormat, error) {
-
-	result := entities.UserDataFormat{}
-
-	user := repo.Collection.FindOne(repo.Context, bson.M{"user_id": userID}).Decode(&result)
-
-	if user == mongo.ErrNoDocuments {
-		return nil, fmt.Errorf("Address not found")
-	}
-
-	return result.Addresses, nil
-}
-
-func (repo addressRepository) UpdateAddress(userID string, index int, newData *entities.AddressDataFormat) error {
-
-	result := entities.UserDataFormat{}
-
-	user := repo.Collection.FindOne(repo.Context, bson.M{"user_id": userID}).Decode(&result)
-
-	if user == mongo.ErrNoDocuments {
-		return fmt.Errorf("Address not found")
-	}
-
-	result.Addresses[index] = *newData
-
-	_, err := repo.Collection.UpdateOne(repo.Context, bson.M{"user_id": userID}, bson.M{"$set": newData})
-
-	fmt.Println(err)
+	_, err := repo.Collection.InsertOne(repo.Context, bson.M{"user_id": userID, "address_data": []entities.AddressData{}})
 
 	if err != nil {
 		return err
 	}
 
 	return nil
-
 }
 
-func (repo addressRepository) DeleteAddress(userID string, index int) error {
+func (repo addressRepository) InsertNewAddress(userID string, data *entities.AddressData) bool {
 
-	result := entities.UserDataFormat{}
+	filter := bson.M{"user_id": userID}
 
-	err := repo.Collection.FindOne(repo.Context, bson.M{"user_id": userID}).Decode(&result)
-
-	if err == mongo.ErrNoDocuments {
-		return fmt.Errorf("Address not found")
+	update := bson.M{
+		"$push": bson.M{
+			"address_data": bson.M{"$each": []interface{}{data}},
+		},
 	}
 
-	result.Addresses = append(result.Addresses[:index], result.Addresses[index+1:]...)
+	result, err := repo.Collection.UpdateOne(repo.Context, filter, update)
 
-	_, err = repo.Collection.UpdateOne(repo.Context, bson.M{"user_id": userID}, bson.M{"$set": result})
+	if err != nil {
+		return false
+	}
 
+	if result.MatchedCount == 0 {
+		return false
+	}
+
+	return true
+}
+
+func (repo addressRepository) FindAddressByUserID(userID string) (*entities.AddressDataFormat, error) {
+
+	result := entities.AddressDataFormat{}
+
+	user := repo.Collection.FindOne(repo.Context, bson.M{"user_id": userID}).Decode(&result)
+
+	fmt.Println(result)
+
+	if user == mongo.ErrNoDocuments {
+		return nil, fmt.Errorf("User not found")
+	}
+
+	return &result, nil
+}
+
+func (repo addressRepository) UpdateAddress(userID string, index int, newData *entities.AddressData) error {
+
+	filter := bson.M{"user_id": userID}
+
+	update := bson.M{
+		"$set": bson.M{
+			fmt.Sprintf("address_data.%d", index): newData, // Update the element at the specified index
+		},
+	}
+
+	result, err := repo.Collection.UpdateOne(repo.Context, filter, update)
+
+	if err != nil {
+		return err
+	}
+
+	if result.MatchedCount == 0 {
+		return fmt.Errorf("user not found")
+	}
+
+	return nil
+}
+
+func (repo addressRepository) PushAddress(data *entities.AddressDataFormat, index int) error {
+
+	filter := bson.M{"user_id": data.UserID}
+
+	Update := bson.M{
+		"$pull": bson.M{"address_data": data.AddressData[index]},
+	}
+
+	_, err := repo.Collection.UpdateOne(repo.Context, filter, Update)
 	if err != nil {
 		return err
 	}

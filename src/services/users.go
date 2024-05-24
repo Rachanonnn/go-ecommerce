@@ -7,7 +7,8 @@ import (
 )
 
 type usersService struct {
-	UsersRepository repositories.IUsersRepository
+	UsersRepository   repositories.IUsersRepository
+	AddressRepository repositories.IAddressRepository
 }
 
 type IUsersService interface {
@@ -18,9 +19,10 @@ type IUsersService interface {
 	DeleteUser(userID string) error
 }
 
-func NewUsersService(repo0 repositories.IUsersRepository) IUsersService {
+func NewUsersService(repo0 repositories.IUsersRepository, repo1 repositories.IAddressRepository) IUsersService {
 	return &usersService{
-		UsersRepository: repo0,
+		UsersRepository:   repo0,
+		AddressRepository: repo1,
 	}
 }
 
@@ -36,6 +38,12 @@ func (sv usersService) GetAllUser() ([]entities.UserDataFormat, error) {
 
 func (sv usersService) InsertNewAccount(data *entities.UserDataFormat) bool {
 	status := sv.UsersRepository.InsertNewUser(data)
+
+	err := sv.AddressRepository.InsertDefaultAddress(data.UserID)
+
+	if err != nil {
+		return false
+	}
 	return status
 }
 
