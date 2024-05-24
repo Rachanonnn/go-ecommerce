@@ -37,3 +37,19 @@ podman build -t fiber-test .
 ```
 podman run --rm -it -p 3000:3000 fiber-test
 ```
+
+# To-Do
+
+[x] CRUD UserData
+
+[x] CRUD Product
+
+[x] CRUD Address
+
+[ ] Log Product
+
+[ ] Search Product
+
+[ ] List Cart
+
+[ ] Payment
