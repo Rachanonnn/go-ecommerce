@@ -92,7 +92,7 @@ func (h HTTPGateway) DeleteUser(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "success"})
 }
 
-func (h HTTPGateway) GetAddressByID(ctx *fiber.Ctx) error {
+func (h HTTPGateway) GetAddressByUserID(ctx *fiber.Ctx) error {
 
 	params := ctx.Queries()
 
@@ -102,7 +102,7 @@ func (h HTTPGateway) GetAddressByID(ctx *fiber.Ctx) error {
 
 	user_id := params["id"]
 
-	data, err := h.AddressService.GetAddressByID(user_id)
+	data, err := h.AddressService.GetAddressByUserID(user_id)
 
 	if err != nil {
 		return ctx.Status(fiber.StatusForbidden).JSON(entities.ResponseModel{Message: "cannot get address data"})
@@ -186,7 +186,7 @@ func (h HTTPGateway) DeleteAddress(ctx *fiber.Ctx) error {
 	err = h.AddressService.DeleteAddress(user_id, i)
 
 	if err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "cannot update address data"})
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "cannot delete address data"})
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "success"})
