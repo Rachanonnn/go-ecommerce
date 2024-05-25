@@ -40,16 +40,18 @@ podman run --rm -it -p 3000:3000 fiber-test
 
 # To-Do
 
-[X] CRUD UserData
+- [X] Google OAuth 2.0
 
-[X] CRUD Product
+- [X] CRUD UserData
 
-[X] CRUD Address
+- [X] CRUD Product
 
-[ ] Log Product
+- [X] CRUD Address
 
-[ ] Search Product
+- [ ] Log Product
 
-[ ] List Cart
+- [ ] Search Product
 
-[ ] Payment
+- [ ] List Cart
+
+- [ ] Payment
