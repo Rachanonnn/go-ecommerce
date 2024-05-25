@@ -14,7 +14,7 @@ type addressService struct {
 }
 
 type IAddressService interface {
-	GetAddressByID(userID string) (*entities.AddressDataFormat, error)
+	GetAddressByUserID(userID string) (*entities.AddressDataFormat, error)
 	InsertNewAddress(userID string, data *entities.AddressData) bool
 	UpdateAddress(userID string, index int, data *entities.AddressData) error
 	DeleteAddress(userID string, index int) error
@@ -27,7 +27,7 @@ func NewAddressService(repo0 repositories.IAddressRepository, repo1 repositories
 	}
 }
 
-func (sv addressService) GetAddressByID(userID string) (*entities.AddressDataFormat, error) {
+func (sv addressService) GetAddressByUserID(userID string) (*entities.AddressDataFormat, error) {
 	addressData, err := sv.AddressRepository.FindAddressByUserID(userID)
 
 	log.Info(addressData)
@@ -41,7 +41,7 @@ func (sv addressService) GetAddressByID(userID string) (*entities.AddressDataFor
 
 func (sv addressService) InsertNewAddress(userID string, data *entities.AddressData) bool {
 
-	addresses, err := sv.GetAddressByID(userID)
+	addresses, err := sv.GetAddressByUserID(userID)
 
 	if err != nil {
 		return false
@@ -58,7 +58,7 @@ func (sv addressService) InsertNewAddress(userID string, data *entities.AddressD
 
 func (sv addressService) UpdateAddress(userID string, index int, data *entities.AddressData) error {
 
-	_, err := sv.GetAddressByID(userID)
+	_, err := sv.GetAddressByUserID(userID)
 
 	if err != nil {
 		return err
@@ -75,7 +75,7 @@ func (sv addressService) UpdateAddress(userID string, index int, data *entities.
 
 func (sv addressService) DeleteAddress(userID string, index int) error {
 
-	data, err := sv.GetAddressByID(userID)
+	data, err := sv.GetAddressByUserID(userID)
 
 	if err != nil {
 		return err
@@ -85,7 +85,7 @@ func (sv addressService) DeleteAddress(userID string, index int) error {
 		return fmt.Errorf("cannot delete last address")
 	}
 
-	err = sv.AddressRepository.PushAddress(data, index)
+	err = sv.AddressRepository.RemoveAddress(data, index)
 
 	if err != nil {
 		return err

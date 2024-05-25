@@ -21,7 +21,7 @@ type IAddressRepository interface {
 	FindAddressByUserID(userID string) (*entities.AddressDataFormat, error)
 	InsertNewAddress(userID string, data *entities.AddressData) bool
 	UpdateAddress(userID string, index int, newData *entities.AddressData) error
-	PushAddress(data *entities.AddressDataFormat, index int) error
+	RemoveAddress(data *entities.AddressDataFormat, index int) error
 }
 
 func NewAddressRepository(db *MongoDB) IAddressRepository {
@@ -103,7 +103,7 @@ func (repo addressRepository) UpdateAddress(userID string, index int, newData *e
 	return nil
 }
 
-func (repo addressRepository) PushAddress(data *entities.AddressDataFormat, index int) error {
+func (repo addressRepository) RemoveAddress(data *entities.AddressDataFormat, index int) error {
 
 	filter := bson.M{"user_id": data.UserID}
 
