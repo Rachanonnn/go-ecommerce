@@ -191,3 +191,21 @@ func (h HTTPGateway) DeleteAddress(ctx *fiber.Ctx) error {
 
 	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "success"})
 }
+
+func (h HTTPGateway) GetOrdersByUserID(ctx *fiber.Ctx) error {
+
+	params := ctx.Queries()
+
+	if len(params) <= 0 {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "user id not fill"})
+	}
+
+	user_id := params["id"]
+
+	data, err := h.CartService.GetOrdersByUserID(user_id)
+
+	if err != nil {
+		return ctx.Status(fiber.StatusForbidden).JSON(entities.ResponseModel{Message: "cannot get cart data"})
+	}
+	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "success", Data: data})
+}
