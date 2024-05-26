@@ -15,6 +15,7 @@ func GatewayUsers(gateway HTTPGateway, app *fiber.App) {
 	apiProfile.Post("/add_address", gateway.CreateNewAddress)
 	apiProfile.Put("/update_address", gateway.UpdateAddress)
 	apiProfile.Delete("/delete_address", gateway.DeleteAddress)
+	apiProfile.Get("/get_orders_by_user_id", gateway.GetOrdersByUserID)
 }
 
 func GatewayProducts(gateway HTTPGateway, app *fiber.App) {
