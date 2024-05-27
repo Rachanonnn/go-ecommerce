@@ -9,6 +9,7 @@ import (
 type usersService struct {
 	UsersRepository   repositories.IUsersRepository
 	AddressRepository repositories.IAddressRepository
+	CartRepository    repositories.ICartRepository
 }
 
 type IUsersService interface {
@@ -19,10 +20,11 @@ type IUsersService interface {
 	DeleteUser(userID string) error
 }
 
-func NewUsersService(repo0 repositories.IUsersRepository, repo1 repositories.IAddressRepository) IUsersService {
+func NewUsersService(repo0 repositories.IUsersRepository, repo1 repositories.IAddressRepository, repo2 repositories.ICartRepository) IUsersService {
 	return &usersService{
 		UsersRepository:   repo0,
 		AddressRepository: repo1,
+		CartRepository:    repo2,
 	}
 }
 
@@ -44,6 +46,13 @@ func (sv usersService) InsertNewAccount(data *entities.UserDataFormat) bool {
 	if err != nil {
 		return false
 	}
+
+	err = sv.CartRepository.InsertDefaultCart(data.UserID)
+
+	if err != nil {
+		return false
+	}
+
 	return status
 }
 
