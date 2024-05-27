@@ -14,7 +14,7 @@ const HeroSection = () => {
               enjoy hassle-free shopping at your fingertips!
             </p>
             <a className="btn btn-primary" href="/products">
-              Get Started
+              Get Product All
             </a>
           </div>
         </div>
