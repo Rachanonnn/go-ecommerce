@@ -41,7 +41,7 @@ func main() {
 	sv0 := sv.NewUsersService(userMongo, addressMongo, cartMongo)
 	sv1 := sv.NewProductService(productMongo)
 	sv2 := sv.NewAddressService(addressMongo, userMongo)
-	sv3 := sv.NewCartService(cartMongo, userMongo)
+	sv3 := sv.NewCartService(cartMongo, userMongo, productMongo)
 	sv4 := sv.NewGoogleService()
 
 	gw.NewHTTPGateway(app, sv0, sv1, sv2, sv3, sv4)

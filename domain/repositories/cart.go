@@ -19,7 +19,9 @@ type cartRepository struct {
 type ICartRepository interface {
 	InsertDefaultCart(userID string) error
 	FindCartByUserID(userID string) (*entities.CartDataFormat, error)
-	InsertNewOrder(userID string, data *entities.CartData) error
+	InsertNewOrder(userID string, data *entities.OrderData) error
+	UpdateOrder(userID string, index int, newData *entities.OrderData) error
+	RemoveOrder(data *entities.CartDataFormat, index int) error
 }
 
 func NewCartRepository(db *MongoDB) ICartRepository {
@@ -31,7 +33,7 @@ func NewCartRepository(db *MongoDB) ICartRepository {
 
 func (repo cartRepository) InsertDefaultCart(userID string) error {
 
-	_, err := repo.Collection.InsertOne(repo.Context, bson.M{"user_id": userID, "cart_data": []entities.CartData{}})
+	_, err := repo.Collection.InsertOne(repo.Context, bson.M{"user_id": userID, "cart_data": []entities.OrderData{}})
 
 	if err != nil {
 		return err
@@ -53,7 +55,7 @@ func (repo cartRepository) FindCartByUserID(userID string) (*entities.CartDataFo
 	return &result, nil
 }
 
-func (repo cartRepository) InsertNewOrder(userID string, data *entities.CartData) error {
+func (repo cartRepository) InsertNewOrder(userID string, data *entities.OrderData) error {
 
 	filter := bson.M{"user_id": userID}
 
@@ -74,4 +76,41 @@ func (repo cartRepository) InsertNewOrder(userID string, data *entities.CartData
 	}
 
 	return err
+}
+
+func (repo cartRepository) UpdateOrder(userID string, index int, newData *entities.OrderData) error {
+	filter := bson.M{"user_id": userID}
+
+	update := bson.M{
+		"$set": bson.M{
+			fmt.Sprintf("cart_data.%d", index): newData, // Update the element at the specified index
+		},
+	}
+
+	result, err := repo.Collection.UpdateOne(repo.Context, filter, update)
+
+	if err != nil {
+		return err
+	}
+
+	if result.MatchedCount == 0 {
+		return fmt.Errorf("user not found")
+	}
+
+	return nil
+}
+
+func (repo cartRepository) RemoveOrder(data *entities.CartDataFormat, index int) error {
+	filter := bson.M{"user_id": data.UserID}
+
+	Update := bson.M{
+		"$pull": bson.M{"cart_data": data.Orders[index]},
+	}
+
+	_, err := repo.Collection.UpdateOne(repo.Context, filter, Update)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
