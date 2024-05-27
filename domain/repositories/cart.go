@@ -19,6 +19,7 @@ type cartRepository struct {
 type ICartRepository interface {
 	InsertDefaultCart(userID string) error
 	FindCartByUserID(userID string) (*entities.CartDataFormat, error)
+	InsertNewOrder(userID string, data *entities.CartData) error
 }
 
 func NewCartRepository(db *MongoDB) ICartRepository {
@@ -50,4 +51,27 @@ func (repo cartRepository) FindCartByUserID(userID string) (*entities.CartDataFo
 	}
 
 	return &result, nil
+}
+
+func (repo cartRepository) InsertNewOrder(userID string, data *entities.CartData) error {
+
+	filter := bson.M{"user_id": userID}
+
+	update := bson.M{
+		"$push": bson.M{
+			"cart_data": bson.M{"$each": []interface{}{data}},
+		},
+	}
+
+	result, err := repo.Collection.UpdateOne(repo.Context, filter, update)
+
+	if err != nil {
+		return err
+	}
+
+	if result.MatchedCount == 0 {
+		return err
+	}
+
+	return err
 }

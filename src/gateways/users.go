@@ -110,7 +110,7 @@ func (h HTTPGateway) GetAddressByUserID(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "success", Data: data})
 }
 
-func (h HTTPGateway) CreateNewAddress(ctx *fiber.Ctx) error {
+func (h HTTPGateway) AddNewAddress(ctx *fiber.Ctx) error {
 
 	var bodyData entities.AddressData
 	if err := ctx.BodyParser(&bodyData); err != nil {
@@ -208,4 +208,29 @@ func (h HTTPGateway) GetOrdersByUserID(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusForbidden).JSON(entities.ResponseModel{Message: "cannot get cart data"})
 	}
 	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "success", Data: data})
+}
+
+func (h HTTPGateway) AddtoCart(ctx *fiber.Ctx) error {
+
+	var bodyData entities.CartData
+
+	if err := ctx.BodyParser(&bodyData); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseMessage{Message: "invalid json body"})
+	}
+
+	params := ctx.Queries()
+
+	if len(params) <= 0 {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "user id not fill"})
+	}
+
+	user_id := params["id"]
+
+	err := h.CartService.AddtoCart(user_id, &bodyData)
+
+	if err != nil {
+		return ctx.Status(fiber.StatusForbidden).JSON(entities.ResponseModel{Message: "cannot insert new order account."})
+	}
+	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "success"})
+
 }

@@ -12,6 +12,7 @@ type cartService struct {
 
 type ICartService interface {
 	GetOrdersByUserID(userID string) (*entities.CartDataFormat, error)
+	AddtoCart(userID string, data *entities.CartData) error
 }
 
 func NewCartService(repo0 repositories.ICartRepository, repo1 repositories.IUsersRepository) ICartService {
@@ -30,4 +31,11 @@ func (sv cartService) GetOrdersByUserID(userID string) (*entities.CartDataFormat
 	}
 
 	return cartData, nil
+}
+
+func (sv cartService) AddtoCart(userID string, data *entities.CartData) error {
+
+	status := sv.CartRepository.InsertNewOrder(userID, data)
+
+	return status
 }

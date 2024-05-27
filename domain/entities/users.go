@@ -31,6 +31,5 @@ type CartDataFormat struct {
 type CartData struct {
 	ProductID string `json:"product_id" bson:"product_id,omitempty"`
 	Quantity  int    `json:"quantity" bson:"quantity,omitempty"`
-	Price     int    `json:"price" bson:"price,omitempty"`
-	Total     int    `json:"total" bson:"total,omitempty"`
+	Total     int    `json:"total_price" bson:"total_price,omitempty"`
 }
