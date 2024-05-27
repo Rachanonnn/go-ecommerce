@@ -4,7 +4,7 @@ type UserDataFormat struct {
 	UserID    string `json:"user_id" bson:"user_id,omitempty"`
 	Firstname string `json:"first_name" validate:"required, min=3, max=40" bson:"first_name,omitempty"`
 	Lastname  string `json:"last_name" validate:"required, min=3, max=40" bson:"last_name,omitempty"`
-	Password  string `json:"password" validate:"required, min=6" bson:"password,omitempty"`
+	Token     string `json:"token" bson:"token,omitempty"`
 	Email     string `json:"email" validate:"required, email" bson:"email,omitempty"`
 	Tel       string `json:"tel" validate:"required" bson:"tel,omitempty"`
 	Role      string `json:"role" bson:"role,omitempty"`
