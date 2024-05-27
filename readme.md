@@ -38,15 +38,19 @@ podman build -t fiber-test .
 podman run --rm -it -p 3000:3000 fiber-test
 ```
 
+# Postman Example
+
+--> [Download](go-ecommerce.postman_collection.json)
+
 # To-Do
 
-- [X] Google OAuth 2.0
+- [x] Google OAuth 2.0
 
-- [X] CRUD UserData
+- [x] CRUD UserData
 
-- [X] CRUD Product
+- [x] CRUD Product
 
-- [X] CRUD Address
+- [x] CRUD Address
 
 - [ ] Log Product
 
