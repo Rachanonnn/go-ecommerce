@@ -9,13 +9,10 @@ require (
 	github.com/golang-jwt/jwt/v5 v5.2.0
 	go.elastic.co/apm/module/apmmongo v1.15.0
 	go.mongodb.org/mongo-driver v1.15.0
+	golang.org/x/oauth2 v0.20.0
 )
 
-require (
-	cloud.google.com/go/compute/metadata v0.3.0 // indirect
-	github.com/google/go-cmp v0.5.9 // indirect
-	golang.org/x/oauth2 v0.20.0 // indirect
-)
+require cloud.google.com/go/compute/metadata v0.3.0 // indirect
 
 require (
 	github.com/MicahParks/keyfunc/v2 v2.1.0 // indirect
