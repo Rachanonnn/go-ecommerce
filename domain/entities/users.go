@@ -24,11 +24,12 @@ type AddressData struct {
 }
 
 type CartDataFormat struct {
-	UserID   string     `json:"user_id" bson:"user_id,omitempty"`
-	CartData []CartData `json:"cart_data" bson:"cart_data,omitempty"`
+	UserID string      `json:"user_id" bson:"user_id,omitempty"`
+	Orders []OrderData `json:"cart_data" bson:"cart_data,omitempty"`
+	Total  int         `json:"total" bson:"total,omitempty"`
 }
 
-type CartData struct {
+type OrderData struct {
 	ProductID string `json:"product_id" bson:"product_id,omitempty"`
 	Quantity  int    `json:"quantity" bson:"quantity,omitempty"`
 	Total     int    `json:"total_price" bson:"total_price,omitempty"`

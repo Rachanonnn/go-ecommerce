@@ -212,7 +212,7 @@ func (h HTTPGateway) GetOrdersByUserID(ctx *fiber.Ctx) error {
 
 func (h HTTPGateway) AddtoCart(ctx *fiber.Ctx) error {
 
-	var bodyData entities.CartData
+	var bodyData entities.OrderData
 
 	if err := ctx.BodyParser(&bodyData); err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseMessage{Message: "invalid json body"})
@@ -233,4 +233,63 @@ func (h HTTPGateway) AddtoCart(ctx *fiber.Ctx) error {
 	}
 	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "success"})
 
+}
+
+func (h HTTPGateway) UpdateOrder(ctx *fiber.Ctx) error {
+	cartData := new(entities.OrderData)
+
+	err := ctx.BodyParser(&cartData)
+
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "invalid json body"})
+	}
+
+	params := ctx.Queries()
+
+	if len(params) <= 0 {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "cart id not fill"})
+	}
+
+	user_id := params["id"]
+	index := params["index"]
+
+	i, err := strconv.Atoi(index)
+
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "invalid cart index"})
+	}
+
+	err = h.CartService.UpdateOrder(user_id, i, cartData)
+
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "cannot update cart data"})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "success", Data: cartData})
+}
+
+func (h HTTPGateway) DeleteOrder(ctx *fiber.Ctx) error {
+
+	params := ctx.Queries()
+
+	if len(params) <= 0 {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "user id not fill"})
+	}
+
+	user_id := params["id"]
+	index := params["index"]
+
+	i, err := strconv.Atoi(index)
+
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "invalid cart index"})
+	}
+
+	err = h.CartService.DeleteAddress(user_id, i)
+
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "cannot delete cart data"})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "success"})
 }
