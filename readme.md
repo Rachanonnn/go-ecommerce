@@ -7,9 +7,6 @@
 </div>
 
 
-Here's a basic `README.md` for your Go project using the Fiber web framework:
-
-```markdown
 # Gateway API
 
 This project implements a set of API gateways for managing users, products, and Google authentication using the Fiber web framework in Go.
