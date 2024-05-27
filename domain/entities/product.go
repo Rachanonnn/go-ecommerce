@@ -5,5 +5,4 @@ type ProductDataFormat struct {
 	Name      string `json:"product_name" bson:"product_name,omitempty"`
 	Quantity  int    `json:"quantity" bson:"quantity,omitempty"`
 	Price     int    `json:"price" bson:"price,omitempty"`
-	Image     string `json:"image" bson:"image,omitempty"`
 }
