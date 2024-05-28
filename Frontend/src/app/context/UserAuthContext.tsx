@@ -35,7 +35,10 @@ export function UserAuthContextProvider({ children }: { children: ReactNode }) {
 
   const signUp = async (email: string, password: string) => {
     const userData = await createUserWithEmailAndPassword(auth, email, password);
-    console.log(userData)
+    // send data to backend
+    // 1 email
+    // 2 user_id or uid from firebase
+    console.log(userData.user)
   };
 
   const logOut = async () => {
