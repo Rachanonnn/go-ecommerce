@@ -34,7 +34,8 @@ export function UserAuthContextProvider({ children }: { children: ReactNode }) {
   };
 
   const signUp = async (email: string, password: string) => {
-    await createUserWithEmailAndPassword(auth, email, password);
+    const userData = await createUserWithEmailAndPassword(auth, email, password);
+    console.log(userData)
   };
 
   const logOut = async () => {
