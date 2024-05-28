@@ -1,13 +1,33 @@
+"use client";
+
 import React from "react";
+import { useRouter } from "next/navigation";
+import { useUserAuth } from "@/app/context/UserAuthContext";
 
 const Navbar = () => {
+  const router = useRouter();
+
+  const { logOut } = useUserAuth();
+
+  const handleLogout = async () => {
+    try {
+      await logOut();
+      router.push("/login");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
       <div className="navbar bg-base-100">
         <div className="flex-1">
-          <a className="btn btn-ghost text-xl" href="/">
+          <button
+            onClick={() => router.push("/")}
+            className="btn btn-ghost text-xl"
+          >
             E-Commerce
-          </a>
+          </button>
         </div>
         <div className="flex-none">
           <div className="dropdown dropdown-end">
@@ -76,7 +96,19 @@ const Navbar = () => {
                 <a>Settings</a>
               </li>
               <li>
-                <a>Logout</a>
+                <a onClick={() => router.push("/login")}>Login</a>
+              </li>
+              <li>
+                <a onClick={() => router.push("/register")}>Register</a>
+              </li>
+              <li>
+                <a
+                  onClick={() => {
+                    handleLogout();
+                  }}
+                >
+                  Logout
+                </a>
               </li>
             </ul>
           </div>
