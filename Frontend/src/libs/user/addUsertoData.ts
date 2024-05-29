@@ -1,18 +1,24 @@
-interface PostProductData {
-    product_name: string;
-    quantity: number;
-    price: number;
+interface UserData {
+    user_id:    string;
+	first_name: string; 
+	last_name:  string; 
+	email:     string;
+	tel:       string;
+	role:      string;
 }
 
-export default async function addProduct({ product_name, quantity, price }: PostProductData): Promise<any> {
-    const data: PostProductData = {
-        product_name,
-        quantity,
-        price
+export default async function addUser({ user_id, first_name, last_name, email, tel, role }: UserData): Promise<any> {
+    const data: UserData = {
+        user_id,
+        first_name,
+        last_name,
+        email,
+        tel,
+        role
     };
 
     try {
-        const response = await fetch(`${process.env.BACKEND_URL}/api/v1/product/add_product`, {
+        const response = await fetch(`${process.env.BACKEND_URL}/api/v1/profile/add_user`, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
@@ -28,9 +34,9 @@ export default async function addProduct({ product_name, quantity, price }: Post
             try {
                 errorDetails = JSON.parse(responseText);
             } catch (e) {
-                throw new Error(`Failed to fetch product: ${response.statusText}`);
+                throw new Error(`Failed to fetch user: ${response.statusText}`);
             }
-            throw new Error(`Failed to fetch product: ${errorDetails.message || response.statusText}`);
+            throw new Error(`Failed to fetch user: ${errorDetails.message || response.statusText}`);
         }
 
         console.log('Server response (success):', responseText);
