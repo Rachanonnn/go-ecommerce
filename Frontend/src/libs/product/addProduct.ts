@@ -2,15 +2,13 @@ interface PostProductData {
     product_name: string;
     quantity: number;
     price: number;
-    product_id: string;
 }
 
-export default async function addProduct({ product_name, quantity, price, product_id }: PostProductData): Promise<any> {
+export default async function addProduct({ product_name, quantity, price }: PostProductData): Promise<any> {
     const data: PostProductData = {
         product_name,
         quantity,
-        price,
-        product_id
+        price
     };
 
     try {

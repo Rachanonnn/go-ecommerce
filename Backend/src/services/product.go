@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"go-ecommerce/domain/entities"
 	"go-ecommerce/domain/repositories"
+	"strconv"
 )
 
 type productService struct {
@@ -43,8 +44,38 @@ func (sv productService) GetProductByID(productID string) (*entities.ProductData
 	return productData, nil
 }
 
+func (sv productService) GenerateNewProductID() (int, error) {
+	// Get the most recent product ID from the database
+	maxProductID, err := sv.ProductRepository.GetMaxProductID()
+	if err != nil {
+		return 0, err
+	}
+
+	// Convert the maximum product ID to an integer
+	lastID, err := strconv.Atoi(maxProductID)
+	if err != nil {
+		return 0, err
+	}
+
+	// Increment the product ID by 1
+	newID := lastID + 1
+
+	return newID, nil
+}
+
 func (sv productService) InsertNewProduct(data *entities.ProductDataFormat) bool {
+	// Generate a new product ID
+	newID, err := sv.GenerateNewProductID()
+	if err != nil {
+		return false
+	}
+
+	// Assign the generated product ID to the data
+	data.ProductID = strconv.Itoa(newID)
+
+	// Call the repository to insert the new product
 	status := sv.ProductRepository.InsertNewProduct(data)
+
 	return status
 }
 

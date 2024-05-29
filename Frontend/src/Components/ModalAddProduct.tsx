@@ -12,7 +12,6 @@ const ModalAddProduct: React.FC<ModalAddProductProps> = ({ onProductAdded }) => 
             product_name: event.currentTarget.product_name.value,
             quantity: Number(event.currentTarget.quantity.value),
             price: Number(event.currentTarget.price.value),
-            product_id: event.currentTarget.product_id.value
         }
         await addProduct(newProduct);
         (document.getElementById('modalAddProduct') as HTMLFormElement).close()
@@ -29,10 +28,6 @@ const ModalAddProduct: React.FC<ModalAddProductProps> = ({ onProductAdded }) => 
                     </form>
                     <h3 className="font-bold text-lg">Add Product</h3>
                     <form onSubmit={onSubmit} className="flex flex-col gap-4 mt-4">
-                        <label className="input input-bordered flex items-center gap-2">
-                            Product ID
-                            <input type="text" className="grow" placeholder="0 - 9999" name='product_id' />
-                        </label>
                         <label className="input input-bordered flex items-center gap-2">
                             Product Name
                             <input type="text" className="grow" placeholder="Product Name" name='product_name' />
