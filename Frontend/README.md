@@ -13,6 +13,3 @@ pnpm dev
 # or
 bun dev
 ```
-
-# Todo
-- [] after register then send user data to backend

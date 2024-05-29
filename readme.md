@@ -113,3 +113,37 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 Please feel free to submit issues, fork the repository, and send pull requests.
 
+# Trello
+- https://trello.com/b/57zHhoiC/ecommerce
+
+# Changelog
+
+## 1.1
+- frontend | feat : add icon and add button clear
+- frontend | merge branch feature/add-product-recheck to develop and remove https://trello.com/c/s9unRXEJ/4-feature-add-product-recheck
+
+## 1.0
+- backend | add uid generate when user sign in to database
+- backend | add token generate when user sign in to database
+- backend | support sign in with firebase email and password
+
+# To-Do Backend
+
+- [x] Google OAuth 2.0
+
+- [x] CRUD UserData
+
+- [x] CRUD Product
+
+- [x] CRUD Address
+
+- [ ] Log Product
+
+- [ ] Search Product
+
+- [ ] List Cart
+
+- [ ] Payment
+
+# To-Do Frontend
+- [ ] after register then send user data to backend
