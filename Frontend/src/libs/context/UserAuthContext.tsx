@@ -16,11 +16,14 @@ import {
   User,
 } from "firebase/auth";
 import { auth } from "@/libs/auth/firebase";
+import addUser from "../user/addUsertoData";
+import getUserbyID from "../user/getUserbyID";
+import setToken from "@/libs/user/cookies";
 
 interface AuthContextType {
   user: User | null;
   logIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string) => Promise<void>;
+  signUp: (userNewData: any) => Promise<void>;
   logOut: () => Promise<void>;
 }
 
@@ -30,16 +33,31 @@ export function UserAuthContextProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
 
   const logIn = async (email: string, password: string) => {
-    await signInWithEmailAndPassword(auth, email, password);
+    const userData = await signInWithEmailAndPassword(auth, email, password);
+    const user = await getUserbyID(userData.user.uid);
+    console.log(user);
+    const token: string = user.data.token;
+    console.log(token);
+    await setToken(token);
   };
 
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (userNewData: any) => {
+    console.log(userNewData.email);
     const userData = await createUserWithEmailAndPassword(
       auth,
-      email,
-      password
+      userNewData.email,
+      userNewData.password
     );
+    const newUser = {
+      user_id: userData.user.uid,
+      first_name: userNewData.first_name,
+      last_name: userNewData.last_name,
+      email: userNewData.email,
+      tel: userNewData.tel,
+      role: "user",
+    };
     // send data to backend
+    await addUser(newUser);
     // 1 email
     // 2 user_id or uid from firebase
     console.log(userData.user);

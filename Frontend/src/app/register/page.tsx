@@ -5,17 +5,23 @@ import { useRouter } from "next/navigation";
 import { useUserAuth } from "../../libs/context/UserAuthContext";
 
 const page = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const { signUp } = useUserAuth();
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const newUser = {
+      first_name: e.currentTarget.first_name.value,
+      last_name: e.currentTarget.last_name.value,
+      email: e.currentTarget.email.value,
+      tel: e.currentTarget.tel.value,
+      password: e.currentTarget.password.value,
+    };
+    console.log(newUser);
     setError("");
     try {
-      await signUp(email, password);
+      await signUp(newUser);
       router.push("/");
     } catch (err: any) {
       setError(err.message);
@@ -50,10 +56,10 @@ const page = () => {
             type="email"
             className="grow"
             placeholder="Email"
-            onChange={(e) => setEmail(e.target.value)}
+            name="email"
           />
         </label>
-        {/* <label className="input input-bordered flex items-center gap-2">
+        <label className="input input-bordered flex items-center gap-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 16 16"
@@ -62,8 +68,40 @@ const page = () => {
           >
             <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
           </svg>
-          <input type="text" className="grow" placeholder="Username" />
-        </label> */}
+          <input
+            type="text"
+            className="grow"
+            placeholder="Firstname"
+            name="first_name"
+          />
+        </label>
+        <label className="input input-bordered flex items-center gap-2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 16 16"
+            fill="currentColor"
+            className="w-4 h-4 opacity-70"
+          >
+            <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
+          </svg>
+          <input
+            type="text"
+            className="grow"
+            placeholder="Lastname"
+            name="last_name"
+          />
+        </label>
+        <label className="input input-bordered flex items-center gap-2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 16 16"
+            fill="currentColor"
+            className="w-4 h-4 opacity-70"
+          >
+            <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
+          </svg>
+          <input type="text" className="grow" placeholder="Tel" name="tel" />
+        </label>
         <label className="input input-bordered flex items-center gap-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -82,7 +120,7 @@ const page = () => {
             className="grow"
             // value="password"
             placeholder="Password"
-            onChange={(e) => setPassword(e.target.value)}
+            name="password"
           />
         </label>
         <button
