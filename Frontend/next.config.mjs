@@ -2,6 +2,7 @@
 const nextConfig = {
     env: {
         BACKEND_URL: process.env.BACKEND_URL, // pulls from .env file
+        FIREBASE_CONFIG: process.env.FIREBASE_CONFIG,
         FIREBASE_API_KEY: process.env.FIREBASE_API_KEY,
         FIREBASE_AUTH_DOMAIN: process.env.FIREBASE_AUTH_DOMAIN,
         FIREBASE_PROJECT_ID: process.env.FIREBASE_PROJECT_ID,
