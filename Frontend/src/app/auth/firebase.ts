@@ -3,7 +3,9 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics, isSupported } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
 
-const firebaseConfig = process.env.FIREBASE_CONFIG;
+let json = process.env.FIREBASE_CONFIG;
+
+const firebaseConfig = JSON.parse(json || "{}");
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
