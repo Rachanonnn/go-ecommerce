@@ -2,6 +2,7 @@ package entities
 
 type UserDataFormat struct {
 	UserID    string `json:"user_id" bson:"user_id,omitempty"`
+	Uid       string `json:"uid" bson:"uid,omitempty"`
 	Firstname string `json:"first_name" validate:"required, min=3, max=40" bson:"first_name,omitempty"`
 	Lastname  string `json:"last_name" validate:"required, min=3, max=40" bson:"last_name,omitempty"`
 	Token     string `json:"token" bson:"token,omitempty"`

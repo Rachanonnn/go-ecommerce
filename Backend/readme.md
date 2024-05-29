@@ -42,6 +42,13 @@ podman run --rm -it -p 3000:3000 fiber-test
 
 --> [Download](go-ecommerce.postman_collection.json)
 
+# Changelog
+
+## 1.0
+- add uid generate when user sign in to database
+- add token generate when user sign in to database
+- support sign in with firebase email and password
+
 # To-Do
 
 - [x] Google OAuth 2.0
