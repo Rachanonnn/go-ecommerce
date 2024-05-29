@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"go-ecommerce/domain/entities"
 	"go-ecommerce/domain/repositories"
+	"go-ecommerce/src/middlewares"
+
+	"github.com/google/uuid"
 )
 
 type usersService struct {
@@ -39,9 +42,15 @@ func (sv usersService) GetAllUser() ([]entities.UserDataFormat, error) {
 }
 
 func (sv usersService) InsertNewAccount(data *entities.UserDataFormat) bool {
+	data.Uid = uuid.New().String()
+	tokenData, err := middlewares.GenerateJWTToken(data.UserID, data.Uid)
+	if err != nil {
+		return false
+	}
+	data.Token = *tokenData.Token
 	status := sv.UsersRepository.InsertNewUser(data)
 
-	err := sv.AddressRepository.InsertDefaultAddress(data.UserID)
+	err = sv.AddressRepository.InsertDefaultAddress(data.UserID)
 
 	if err != nil {
 		return false
