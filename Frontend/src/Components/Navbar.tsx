@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import { useUserAuth } from "@/app/context/UserAuthContext";
+import { useUserAuth } from "@/libs/context/UserAuthContext";
 
 const Navbar = () => {
   const router = useRouter();
