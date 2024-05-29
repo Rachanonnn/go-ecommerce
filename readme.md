@@ -119,8 +119,10 @@ Please feel free to submit issues, fork the repository, and send pull requests.
 # Changelog
 
 ## 1.1
+- frontend | feat : add product show skeleton before fetch data and merge to develop
 - frontend | feat : add icon and add button clear
 - frontend | merge branch feature/add-product-recheck to develop and remove https://trello.com/c/s9unRXEJ/4-feature-add-product-recheck
+
 
 ## 1.0
 - backend | add uid generate when user sign in to database
