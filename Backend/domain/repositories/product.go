@@ -25,6 +25,7 @@ type IProductRepository interface {
 	FindProductByID(productID string) (*entities.ProductDataFormat, error)
 	UpdateProduct(productID string, data *entities.ProductDataFormat) error
 	DeleteProduct(productID string) error
+	GetMaxProductID() (string, error)
 }
 
 func NewProductRepository(db *MongoDB) IProductRepository {
@@ -69,6 +70,26 @@ func (repo productRepository) FindProductByID(productID string) (*entities.Produ
 	}
 
 	return &result, nil
+}
+
+func (r *productRepository) GetMaxProductID() (string, error) {
+	// Define options to sort the documents in descending order based on product ID
+	opts := options.FindOne().SetSort(bson.D{{Key: "product_id", Value: -1}})
+
+	// Find the document with the highest product ID
+	filter := bson.M{}
+	var result entities.ProductDataFormat
+	err := r.Collection.FindOne(r.Context, filter, opts).Decode(&result)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			// If no documents are found, return "0"
+			return "0", nil
+		}
+		return "", err
+	}
+
+	// Return the product ID as a string
+	return result.ProductID, nil
 }
 
 func (repo productRepository) InsertNewProduct(data *entities.ProductDataFormat) bool {
