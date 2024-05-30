@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/Components/Navbar";
 import { UserAuthContextProvider } from "@/libs/context/UserAuthContext";
+import { Footer } from "@/Components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,6 +23,7 @@ export default function RootLayout({
         <UserAuthContextProvider>
           <Navbar />
           {children}
+          <Footer />
         </UserAuthContextProvider>
       </body>
     </html>

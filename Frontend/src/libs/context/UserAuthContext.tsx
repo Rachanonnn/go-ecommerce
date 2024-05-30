@@ -6,7 +6,6 @@ import React, {
   useEffect,
   useState,
   ReactNode,
-  FC,
 } from "react";
 import {
   createUserWithEmailAndPassword,
@@ -16,9 +15,10 @@ import {
   User,
 } from "firebase/auth";
 import { auth } from "@/libs/auth/firebase";
-import addUser from "../user/addUsertoData";
-import getUserbyID from "../user/getUserbyID";
+import addUser from "@/libs/user/addUsertoData";
+import getUserbyID from "@/libs/user/getUserbyID";
 import setToken from "@/libs/user/cookies";
+import { deleteCookie } from "cookies-next";
 
 interface AuthContextType {
   user: User | null;
@@ -27,22 +27,23 @@ interface AuthContextType {
   logOut: () => Promise<void>;
 }
 
-const userAuthContext = createContext<AuthContextType | undefined>(undefined);
+const UserAuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function UserAuthContextProvider({ children }: { children: ReactNode }) {
+export const UserAuthContextProvider = ({
+  children,
+}: {
+  children: ReactNode;
+}) => {
   const [user, setUser] = useState<User | null>(null);
 
   const logIn = async (email: string, password: string) => {
     const userData = await signInWithEmailAndPassword(auth, email, password);
     const user = await getUserbyID(userData.user.uid);
-    console.log(user);
     const token: string = user.data.token;
-    console.log(token);
     await setToken(token);
   };
 
   const signUp = async (userNewData: any) => {
-    console.log(userNewData.email);
     const userData = await createUserWithEmailAndPassword(
       auth,
       userNewData.email,
@@ -56,21 +57,17 @@ export function UserAuthContextProvider({ children }: { children: ReactNode }) {
       tel: userNewData.tel,
       role: "user",
     };
-    // send data to backend
     await addUser(newUser);
-    // 1 email
-    // 2 user_id or uid from firebase
-    console.log(userData.user);
   };
 
   const logOut = async () => {
+    deleteCookie("token");
     return signOut(auth);
   };
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-        console.log("Auth", currentUser);
         setUser(currentUser);
       });
 
@@ -81,18 +78,18 @@ export function UserAuthContextProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <userAuthContext.Provider value={{ user, logIn, signUp, logOut }}>
+    <UserAuthContext.Provider value={{ user, logIn, signUp, logOut }}>
       {children}
-    </userAuthContext.Provider>
+    </UserAuthContext.Provider>
   );
-}
+};
 
-export function useUserAuth() {
-  const context = useContext(userAuthContext);
+export const useUserAuth = () => {
+  const context = useContext(UserAuthContext);
   if (context === undefined) {
     throw new Error(
       "useUserAuth must be used within a UserAuthContextProvider"
     );
   }
   return context;
-}
+};
