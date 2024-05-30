@@ -23,8 +23,8 @@ export default function RootLayout({
         <UserAuthContextProvider>
           <Navbar />
           {children}
-          <Footer />
         </UserAuthContextProvider>
+        <Footer />
       </body>
     </html>
   );
