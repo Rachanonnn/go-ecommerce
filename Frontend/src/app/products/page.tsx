@@ -50,7 +50,7 @@ const Page = () => {
           Add Product
         </button>
       </div>
-      <div className="flex flex-wrap gap-5 justify-center items-center mx-auto mt-10">
+      <div className="flex flex-wrap gap-5 justify-center items-center mx-auto mt-10 m-4">
         {loading
           ? Array.from({ length: 8 }).map((_, index) => (
             <ProductCardSkeleton key={index} />
