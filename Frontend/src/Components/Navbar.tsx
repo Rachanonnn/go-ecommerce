@@ -1,12 +1,37 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useUserAuth } from "@/libs/context/UserAuthContext";
 import checkCookies from "@/libs/user/checkCookies";
+import getitemfromcart from "@/libs/user/getitemfromcart";
 
 const Navbar = () => {
   const router = useRouter();
+  const { user } = useUserAuth();
+  const [cartItems, setCartItems] = useState(0);
+  const [totalCartPrice, setTotalCartPrice] = React.useState<number>(0);
+
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      try {
+        if (!user) return; // Check if user exists
+        let totalCartPrice = 0;
+        const response = await getitemfromcart(user.uid);
+        const cartItemCount = response.data.cart_data.length;
+        for (let i = 0; i < cartItemCount; i++) {
+          const price = response.data.cart_data[i].total_price;
+          totalCartPrice += price;
+        }
+        setCartItems(cartItemCount);
+        setTotalCartPrice(totalCartPrice);
+      } catch (error) {
+        console.error("Error fetching order data:", error);
+      }
+    };
+    fetchCartItems();
+  }, [user]);
+
   const { logOut } = useUserAuth();
   // checkCookies();
   const [isToken, setIsToken] = React.useState(false);
@@ -57,7 +82,6 @@ const Navbar = () => {
                     d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
                   />
                 </svg>
-                <span className="badge badge-sm indicator-item">8</span>
               </div>
             </div>
             <div
@@ -65,10 +89,13 @@ const Navbar = () => {
               className="mt-3 z-[1] card card-compact dropdown-content w-52 bg-base-100 shadow"
             >
               <div className="card-body">
-                <span className="font-bold text-lg">8 Items</span>
-                <span className="text-info">Subtotal: $999</span>
+                <span className="font-bold text-lg">{cartItems} Items</span>
+                <span className="text-info">Total: ${totalCartPrice}</span>
                 <div className="card-actions">
-                  <button className="btn btn-primary btn-block">
+                  <button
+                    onClick={() => router.push("/cart")}
+                    className="btn btn-primary btn-block"
+                  >
                     View cart
                   </button>
                 </div>
