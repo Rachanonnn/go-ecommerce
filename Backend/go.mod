@@ -12,7 +12,10 @@ require (
 	golang.org/x/oauth2 v0.20.0
 )
 
-require cloud.google.com/go/compute/metadata v0.3.0 // indirect
+require (
+	cloud.google.com/go/compute/metadata v0.3.0 // indirect
+	github.com/JohnFarmers/go-unit-tester v1.0.0 // indirect
+)
 
 require (
 	github.com/MicahParks/keyfunc/v2 v2.1.0 // indirect
