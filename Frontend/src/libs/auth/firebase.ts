@@ -2,6 +2,8 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics, isSupported } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
 
 const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY,
@@ -17,6 +19,12 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
+firebase.initializeApp(firebaseConfig);
+const newAuth = firebase.auth();
+
+const provider = new firebase.auth.GoogleAuthProvider();
+provider.setCustomParameters({ prompt: "select_account" });
+
 let analytics;
 
 if (typeof window !== "undefined") {
@@ -27,5 +35,5 @@ if (typeof window !== "undefined") {
   });
 }
 
-export { auth, analytics };
+export { auth, analytics, newAuth, provider };
 export default app;

@@ -1,13 +1,19 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useUserAuth } from "@/libs/context/UserAuthContext";
+import checkCookies from "@/libs/user/checkCookies";
 
 const Navbar = () => {
   const router = useRouter();
-
   const { logOut } = useUserAuth();
+  // checkCookies();
+  const [isToken, setIsToken] = React.useState(false);
+
+  useEffect(() => {
+    setIsToken(checkCookies());
+  });
 
   const handleLogout = async () => {
     try {
@@ -86,30 +92,31 @@ const Navbar = () => {
               tabIndex={0}
               className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
             >
-              <li>
-                <a className="justify-between">
-                  Profile
-                  <span className="badge">New</span>
-                </a>
-              </li>
-              <li>
-                <a>Settings</a>
-              </li>
-              <li>
-                <a onClick={() => router.push("/login")}>Login</a>
-              </li>
-              <li>
-                <a onClick={() => router.push("/register")}>Register</a>
-              </li>
-              <li>
-                <a
-                  onClick={() => {
-                    handleLogout();
-                  }}
-                >
-                  Logout
-                </a>
-              </li>
+              {isToken ? (
+                <>
+                  <li>
+                    <a className="justify-between">Profile</a>
+                  </li>
+                  <li>
+                    <a
+                      onClick={() => {
+                        handleLogout();
+                      }}
+                    >
+                      Logout
+                    </a>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li>
+                    <a onClick={() => router.push("/login")}>Sign in</a>
+                  </li>
+                  <li>
+                    <a onClick={() => router.push("/register")}>Register</a>
+                  </li>
+                </>
+              )}
             </ul>
           </div>
         </div>

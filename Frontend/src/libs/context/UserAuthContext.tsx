@@ -19,6 +19,7 @@ import { auth } from "@/libs/auth/firebase";
 import addUser from "../user/addUsertoData";
 import getUserbyID from "../user/getUserbyID";
 import setToken from "@/libs/user/cookies";
+import { deleteCookie } from "cookies-next";
 
 interface AuthContextType {
   user: User | null;
@@ -35,14 +36,14 @@ export function UserAuthContextProvider({ children }: { children: ReactNode }) {
   const logIn = async (email: string, password: string) => {
     const userData = await signInWithEmailAndPassword(auth, email, password);
     const user = await getUserbyID(userData.user.uid);
-    console.log(user);
+    // console.log(user);
     const token: string = user.data.token;
-    console.log(token);
+    // console.log(token);
     await setToken(token);
   };
 
   const signUp = async (userNewData: any) => {
-    console.log(userNewData.email);
+    // console.log(userNewData.email);
     const userData = await createUserWithEmailAndPassword(
       auth,
       userNewData.email,
@@ -60,10 +61,11 @@ export function UserAuthContextProvider({ children }: { children: ReactNode }) {
     await addUser(newUser);
     // 1 email
     // 2 user_id or uid from firebase
-    console.log(userData.user);
+    // console.log(userData.user);
   };
 
   const logOut = async () => {
+    deleteCookie("token");
     return signOut(auth);
   };
 
