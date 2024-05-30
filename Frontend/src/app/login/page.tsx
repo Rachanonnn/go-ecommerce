@@ -25,13 +25,26 @@ const page = () => {
       setUser(user);
       if (user !== null) {
         await checkUser(user);
-        router.push("/");
       }
     });
 
     // Cleanup subscription on unmount
     return () => unsubscribe();
   }, []);
+
+  const handleSignInWithGoogle = () => {
+    newAuth
+      .signInWithPopup(provider)
+      .then(() => {
+        router.push("/");
+        setTimeout(() => {
+          window.location.reload();
+        }, 500);
+      })
+      .catch((error) => {
+        console.error("Error during sign-in:", error);
+      });
+  };
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -94,15 +107,7 @@ const page = () => {
           <IconLogin size={20} stroke={2} className="text-slate-600" />
           <p>Sign In</p>
         </button>
-        <a
-          className="btn"
-          onClick={() => {
-            newAuth.signInWithPopup(provider).then(() => {
-              // setTimeout(() => {}, 2000);
-              window.location.reload();
-            });
-          }}
-        >
+        <a className="btn" onClick={handleSignInWithGoogle}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             x="0px"
