@@ -3,6 +3,7 @@ module go-ecommerce
 go 1.22.1
 
 require (
+	github.com/JohnFarmers/go-unit-tester v1.0.0
 	github.com/goccy/go-json v0.10.2
 	github.com/gofiber/contrib/jwt v1.0.8
 	github.com/gofiber/fiber/v2 v2.51.0
@@ -12,10 +13,7 @@ require (
 	golang.org/x/oauth2 v0.20.0
 )
 
-require (
-	cloud.google.com/go/compute/metadata v0.3.0 // indirect
-	github.com/JohnFarmers/go-unit-tester v1.0.0 // indirect
-)
+require cloud.google.com/go/compute/metadata v0.3.0 // indirect
 
 require (
 	github.com/MicahParks/keyfunc/v2 v2.1.0 // indirect

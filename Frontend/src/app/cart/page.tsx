@@ -62,7 +62,7 @@ const Page: React.FC = () => {
   }, [fetchOrder]);
 
   return (
-    <div>
+    <>
       <h1 className="text-2xl md:text-3xl font-bold justify-center text-center mx-auto mt-6 mb-10">
         My Cart
       </h1>
@@ -108,7 +108,7 @@ const Page: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
