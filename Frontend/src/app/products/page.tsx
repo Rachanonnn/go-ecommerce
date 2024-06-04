@@ -57,12 +57,13 @@ const Page = () => {
           ? Array.from({ length: 8 }).map((_, index) => (
               <ProductCardSkeleton key={index} />
             ))
-          : productData.map((product) => (
+          : productData.map((product, index) => (
               <ProductCard
-                key={product.product_id}
-                product_id={product.product_id}
+                key={index}
                 name={product.product_name}
                 price={product.price}
+                productId={product.product_id}
+                index={index}
               />
             ))}
       </div>

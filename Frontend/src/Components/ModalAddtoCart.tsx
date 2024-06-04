@@ -4,27 +4,30 @@ import { useUserAuth } from "@/libs/context/UserAuthContext";
 import addProductTocart from "@/libs/product/addProductTocart";
 import { IconStack, IconRefresh, IconUpload } from "@tabler/icons-react";
 import React from "react";
-import getitemformcart from "@/libs/user/getitemfromcart";
-import updateOrderData from "@/libs/product/updateOrderData";
 
 interface ModalAddCartProps {
-  product_id: string;
+  productId: string;
+  index: number;
 }
 
-const ModalAddCart: React.FC<ModalAddCartProps> = ({ product_id }) => {
+const ModalAddCart: React.FC<ModalAddCartProps> = ({ productId, index }) => {
+  console.log("Product ID in ModalAddCart:", productId);
+
   const [formData, setFormData] = React.useState({
+    product_id: productId,
     quantity: 0,
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
-      ...formData,
+      product_id: productId,
       quantity: Number(e.target.value),
     });
   };
 
   const handlerClear = () => {
     setFormData({
+      product_id: productId,
       quantity: 0,
     });
   };
@@ -37,38 +40,30 @@ const ModalAddCart: React.FC<ModalAddCartProps> = ({ product_id }) => {
 
     const newItemtoCart = {
       user_id: user.uid,
-      product_id: product_id,
+      product_id: productId,
       quantity: Number(event.currentTarget.quantity.value),
     };
 
     try {
-      const cartData = await getitemformcart(newItemtoCart.user_id);
-
-      let productExists = false;
-      for (let i = 0; i < cartData.length; i++) {
-        if (cartData[i].product_id === newItemtoCart.product_id) {
-          await updateOrderData({
-            user_id: user.uid,
-            product_id: newItemtoCart.product_id,
-            quantity: cartData[i].quantity + newItemtoCart.quantity,
-          });
-          productExists = true;
-          break;
-        }
-      }
-
-      if (!productExists) {
-        await addProductTocart(newItemtoCart);
-      }
+      await addProductTocart(newItemtoCart);
     } catch (error) {
-      console.error("Error updating cart:", error);
+      console.error("Error adding item to cart:", error);
     }
-    (document.getElementById("modalAddCart") as HTMLFormElement).close();
+
+    const modalId = `modalAddCart${index}`;
+    const modalElement = document.getElementById(
+      modalId
+    ) as HTMLFormElement | null;
+    if (modalElement) {
+      (modalElement as any).close();
+    } else {
+      console.error(`Element with ID ${modalId} not found.`);
+    }
   }
 
   return (
     <>
-      <dialog id="modalAddCart" className="modal">
+      <dialog id={`modalAddCart${index}`} className="modal">
         <div className="modal-box">
           <form method="dialog">
             <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
