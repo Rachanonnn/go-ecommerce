@@ -285,7 +285,7 @@ func (h HTTPGateway) DeleteOrder(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "invalid cart index"})
 	}
 
-	err = h.CartService.DeleteAddress(user_id, i)
+	err = h.CartService.DeleteCart(user_id, i)
 
 	if err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "cannot delete cart data"})

@@ -16,7 +16,7 @@ type ICartService interface {
 	GetOrdersByUserID(userID string) (*entities.CartDataFormat, error)
 	AddtoCart(userID string, data *entities.OrderData) error
 	UpdateOrder(userID string, index int, data *entities.OrderData) error
-	DeleteAddress(userID string, index int) error
+	DeleteCart(userID string, index int) error
 }
 
 func NewCartService(repo0 repositories.ICartRepository, repo1 repositories.IUsersRepository, repo2 repositories.IProductRepository) ICartService {
@@ -39,20 +39,51 @@ func (sv cartService) GetOrdersByUserID(userID string) (*entities.CartDataFormat
 }
 
 func (sv cartService) AddtoCart(userID string, data *entities.OrderData) error {
-
 	productData, err := sv.ProductRepository.FindProductByID(data.ProductID)
+	if err != nil {
+		return err
+	}
+
+	data.Total = productData.Price * data.Quantity
+
+	cartData, err := sv.CartRepository.FindCartByUserID(userID)
+	if err != nil {
+		return err
+	}
+
+	for i := range cartData.Orders {
+		if cartData.Orders[i].ProductID == data.ProductID {
+			cartData.Orders[i].Quantity += data.Quantity
+			cartData.Orders[i].Total += data.Total
+
+			if err := sv.CartRepository.UpdateOrder(userID, i, &cartData.Orders[i]); err != nil {
+				return err
+			}
+
+			cartData.Total += data.Total
+			if err := sv.CartRepository.UpdateCart(userID, cartData); err != nil {
+				return err
+			}
+			return nil
+		}
+	}
+
+	if err := sv.CartRepository.InsertNewOrder(userID, data); err != nil {
+		return err
+	}
+
+	cartData, err = sv.CartRepository.FindCartByUserID(userID)
 
 	if err != nil {
 		return err
 	}
 
-	price := productData.Price * data.Quantity
+	cartData.Total += data.Total
+	if err := sv.CartRepository.UpdateCart(userID, cartData); err != nil {
+		return err
+	}
 
-	data.Total = price
-
-	status := sv.CartRepository.InsertNewOrder(userID, data)
-
-	return status
+	return nil
 }
 
 func (sv cartService) UpdateOrder(userID string, index int, data *entities.OrderData) error {
@@ -78,10 +109,24 @@ func (sv cartService) UpdateOrder(userID string, index int, data *entities.Order
 		return err
 	}
 
+	cartData, err := sv.CartRepository.FindCartByUserID(userID)
+
+	if err != nil {
+		return err
+	}
+
+	cartData.Total = cartData.Total - cartData.Orders[index].Total + data.Total
+
+	err = sv.CartRepository.UpdateCart(userID, cartData)
+
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
-func (sv cartService) DeleteAddress(userID string, index int) error {
+func (sv cartService) DeleteCart(userID string, index int) error {
 	data, err := sv.GetOrdersByUserID(userID)
 
 	if err != nil {

@@ -16,13 +16,9 @@ const Navbar = () => {
     const fetchCartItems = async () => {
       try {
         if (!user) return; // Check if user exists
-        let totalCartPrice = 0;
         const response = await getitemfromcart(user.uid);
         const cartItemCount = response.data.cart_data.length;
-        for (let i = 0; i < cartItemCount; i++) {
-          const price = response.data.cart_data[i].total_price;
-          totalCartPrice += price;
-        }
+        const totalCartPrice = response.data.total;
         setCartItems(cartItemCount);
         setTotalCartPrice(totalCartPrice);
       } catch (error) {

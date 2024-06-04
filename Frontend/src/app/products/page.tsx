@@ -43,7 +43,9 @@ const Page = () => {
           className="btn"
           onClick={() => {
             if (document) {
-              (document.getElementById('modalAddProduct') as HTMLFormElement).showModal();
+              (
+                document.getElementById("modalAddProduct") as HTMLFormElement
+              ).showModal();
             }
           }}
         >
@@ -53,15 +55,17 @@ const Page = () => {
       <div className="flex flex-wrap gap-5 justify-center items-center mx-auto mt-10 m-4">
         {loading
           ? Array.from({ length: 8 }).map((_, index) => (
-            <ProductCardSkeleton key={index} />
-          ))
-          : productData.map((product) => (
-            <ProductCard
-              key={product.product_id}
-              name={product.product_name}
-              price={product.price}
-            />
-          ))}
+              <ProductCardSkeleton key={index} />
+            ))
+          : productData.map((product, index) => (
+              <ProductCard
+                key={index}
+                name={product.product_name}
+                price={product.price}
+                productId={product.product_id}
+                index={index}
+              />
+            ))}
       </div>
     </>
   );
