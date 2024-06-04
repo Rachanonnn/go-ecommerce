@@ -11,7 +11,7 @@ interface ModalAddCartProps {
 }
 
 const ModalAddCart: React.FC<ModalAddCartProps> = ({ productId, index }) => {
-  console.log("Product ID in ModalAddCart:", productId);
+  // console.log("Product ID in ModalAddCart:", productId);
 
   const [formData, setFormData] = React.useState({
     product_id: productId,

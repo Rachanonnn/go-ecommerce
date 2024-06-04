@@ -9,7 +9,7 @@ interface Props {
 }
 
 const ProductCard: React.FC<Props> = ({ index, name, price, productId }) => {
-  console.log(index);
+  // console.log(index);
   return (
     <div>
       <div className="card card-compact w-96 bg-base-100 shadow-xl hover:scale-[1.02] duration-300">
