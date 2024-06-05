@@ -46,6 +46,8 @@ const ModalAddCart: React.FC<ModalAddCartProps> = ({ productId, index }) => {
 
     try {
       await addProductTocart(newItemtoCart);
+      const event = new CustomEvent("cartUpdated");
+      window.dispatchEvent(event);
     } catch (error) {
       console.error("Error adding item to cart:", error);
     }
