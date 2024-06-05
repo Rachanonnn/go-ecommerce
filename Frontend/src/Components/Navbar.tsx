@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useUserAuth } from "@/libs/context/UserAuthContext";
 import checkCookies from "@/libs/user/checkCookies";
@@ -12,21 +12,33 @@ const Navbar = () => {
   const [cartItems, setCartItems] = useState(0);
   const [totalCartPrice, setTotalCartPrice] = React.useState<number>(0);
 
-  useEffect(() => {
-    const fetchCartItems = async () => {
-      try {
-        if (!user) return; // Check if user exists
-        const response = await getitemfromcart(user.uid);
-        const cartItemCount = response.data.cart_data.length;
-        const totalCartPrice = response.data.total;
-        setCartItems(cartItemCount);
-        setTotalCartPrice(totalCartPrice);
-      } catch (error) {
-        console.error("Error fetching order data:", error);
-      }
-    };
-    fetchCartItems();
+  const fetchCartItems = useCallback(async () => {
+    try {
+      if (!user) return; // Check if user exists
+      const response = await getitemfromcart(user.uid);
+      const cartItemCount = response.data.cart_data.length;
+      const totalCartPrice = response.data.total;
+      setCartItems(cartItemCount);
+      setTotalCartPrice(totalCartPrice);
+    } catch (error) {
+      console.error("Error fetching order data:", error);
+    }
   }, [user]);
+
+  useEffect(() => {
+    fetchCartItems();
+  }, [fetchCartItems, user]);
+
+  useEffect(() => {
+    const handleCartUpdate = () => {
+      fetchCartItems();
+    };
+    window.addEventListener("cartUpdated", handleCartUpdate);
+
+    return () => {
+      window.removeEventListener("cartUpdated", handleCartUpdate);
+    };
+  }, [fetchCartItems]);
 
   const { logOut } = useUserAuth();
   // checkCookies();
