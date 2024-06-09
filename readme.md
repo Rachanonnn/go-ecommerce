@@ -6,7 +6,6 @@
 
 </div>
 
-
 # Gateway API
 
 This project implements a set of API gateways for managing users, products, and Google authentication using the Fiber web framework in Go.
@@ -21,6 +20,7 @@ This project implements a set of API gateways for managing users, products, and 
 ### Installation
 
 1. Clone the repository:
+
    ```sh
    git clone https://github.com/Rachanonnn/go-ecommerce
    cd go-ecommerce
@@ -33,6 +33,7 @@ This project implements a set of API gateways for managing users, products, and 
    ```
 
 ## .env file
+
 ```
 DATABASE_NAME=
 MONGODB_URI=
@@ -45,7 +46,7 @@ JWT_REFESH_SECRET_KEY=
 G_CLIENT_ID=
 G_CLIENT_SECRET=
 
-# Make sure this value is the same as the one that we initialize 
+# Make sure this value is the same as the one that we initialize
 # in the google console before.
 G_REDIRECT="http://localhost:8000/api/v1/google_callback"
 ```
@@ -53,6 +54,7 @@ G_REDIRECT="http://localhost:8000/api/v1/google_callback"
 ### Running the Application
 
 Start the application using the following command:
+
 ```sh
 go run .
 ```
@@ -102,6 +104,7 @@ Base URL: `/api/v1`
 # Frontend
 
 ## Getting Started
+
 ```
 cd go-ecommerce/Frontend
 npm run dev
@@ -114,17 +117,19 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 Please feel free to submit issues, fork the repository, and send pull requests.
 
 # Trello
+
 - https://trello.com/b/57zHhoiC/ecommerce
 
 # Changelog
 
 ## 1.1
+
 - frontend | feat : add product show skeleton before fetch data and merge to develop
 - frontend | feat : add icon and add button clear
 - frontend | merge branch feature/add-product-recheck to develop and remove https://trello.com/c/s9unRXEJ/4-feature-add-product-recheck
 
-
 ## 1.0
+
 - backend | add uid generate when user sign in to database
 - backend | add token generate when user sign in to database
 - backend | support sign in with firebase email and password
@@ -143,9 +148,10 @@ Please feel free to submit issues, fork the repository, and send pull requests.
 
 - [ ] Search Product
 
-- [ ] List Cart
+- [x] List Cart
 
 - [ ] Payment
 
 # To-Do Frontend
-- [ ] after register then send user data to backend
+
+- [x] after register then send user data to backend

@@ -5,12 +5,15 @@ import { useRouter } from "next/navigation";
 import { useUserAuth } from "@/libs/context/UserAuthContext";
 import checkCookies from "@/libs/user/checkCookies";
 import getitemfromcart from "@/libs/user/getitemfromcart";
+import getUserbyID from "@/libs/user/getUserbyID";
 
 const Navbar = () => {
   const router = useRouter();
   const { user } = useUserAuth();
   const [cartItems, setCartItems] = useState(0);
   const [totalCartPrice, setTotalCartPrice] = React.useState<number>(0);
+  const [userData, setUserData] = React.useState<any>({});
+  const [hasImage, setHasImage] = React.useState<boolean>(false);
 
   const fetchCartItems = useCallback(async () => {
     try {
@@ -20,6 +23,11 @@ const Navbar = () => {
       const totalCartPrice = response.data.total;
       setCartItems(cartItemCount);
       setTotalCartPrice(totalCartPrice);
+      const fetchData = await getUserbyID(user.uid);
+      setUserData(fetchData.data);
+      if (fetchData.data.image != "") {
+        setHasImage(true);
+      }
     } catch (error) {
       console.error("Error fetching order data:", error);
     }
@@ -56,7 +64,6 @@ const Navbar = () => {
       console.log(error);
     }
   };
-
   return (
     <>
       <div className="navbar bg-base-100">
@@ -117,10 +124,11 @@ const Navbar = () => {
               className="btn btn-ghost btn-circle avatar"
             >
               <div className="w-10 rounded-full">
-                <img
-                  alt="Tailwind CSS Navbar component"
-                  src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
-                />
+                {hasImage ? (
+                  <img src={userData.image} />
+                ) : (
+                  <img src="https://img.freepik.com/free-psd/3d-render-avatar-character_23-2150611737.jpg?t=st=1717690136~exp=1717693736~hmac=d1b28deddab281a32ed845e29e0b68148cee4cb621e7ba53f726e04d98549581&w=826" />
+                )}
               </div>
             </div>
             <ul
@@ -130,7 +138,9 @@ const Navbar = () => {
               {isToken ? (
                 <>
                   <li>
-                    <a className="justify-between">Profile</a>
+                    <a href="/profile" className="justify-between">
+                      Profile
+                    </a>
                   </li>
                   <li>
                     <a
