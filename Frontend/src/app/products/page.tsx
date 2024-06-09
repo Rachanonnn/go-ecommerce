@@ -33,7 +33,7 @@ const Page = () => {
   }, [fetchProducts]);
 
   return (
-    <>
+    <div className="min-h-screen">
       <h1 className="text-2xl md:text-3xl font-bold justify-center text-center mx-auto mt-6">
         Products
       </h1>
@@ -67,7 +67,7 @@ const Page = () => {
               />
             ))}
       </div>
-    </>
+    </div>
   );
 };
 
