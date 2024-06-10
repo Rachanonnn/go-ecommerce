@@ -1,10 +1,8 @@
 import { useUserAuth } from "@/libs/context/UserAuthContext";
+import addAddress from "@/libs/user/addAddressbyID";
+import getAddressbyID from "@/libs/user/getAddressbyID";
 import getUserbyID from "@/libs/user/getUserbyID";
-import updateUser from "@/libs/user/updateUserbyID";
 import {
-  IconStack,
-  IconPackage,
-  IconCash,
   IconRefresh,
   IconUpload,
   IconMail,
@@ -13,32 +11,32 @@ import {
 } from "@tabler/icons-react";
 import React, { useEffect, useState } from "react";
 
-interface ModalUpdateProfileProps {
-  onProfileUpdated: () => void;
+interface ModalAddAddressProps {
+  onAddressAdd: () => void;
 }
 
-const ModalUpdateProfile: React.FC<ModalUpdateProfileProps> = ({
-  onProfileUpdated,
-}) => {
+const ModalAddAddress: React.FC<ModalAddAddressProps> = ({ onAddressAdd }) => {
   const { user } = useUserAuth();
-  const [userData, setUserData] = useState<any>(null);
+  const [addressData, setAddressData] = useState<any>(null);
   const [formData, setFormData] = useState({
-    email: "",
-    tel: "",
-    first_name: "",
-    last_name: "",
+    housename: "",
+    street: "",
+    city: "",
+    state: "",
+    pincode: "",
   });
   const [hasChanged, setHasChanged] = useState(false);
 
   useEffect(() => {
     if (user) {
-      getUserbyID(user.uid).then((data) => {
-        setUserData(data);
+      getAddressbyID(user.uid).then((data) => {
+        setAddressData(data);
         setFormData({
-          email: data.data.email,
-          tel: data.data.tel,
-          first_name: data.data.first_name,
-          last_name: data.data.last_name,
+          housename: "",
+          street: "",
+          city: "",
+          state: "",
+          pincode: "",
         });
       });
     }
@@ -53,47 +51,51 @@ const ModalUpdateProfile: React.FC<ModalUpdateProfileProps> = ({
   };
 
   const handleReset = () => {
-    if (userData) {
-      setHasChanged(false);
+    if (addressData) {
       setFormData({
-        email: userData.data.email,
-        tel: userData.data.tel,
-        first_name: userData.data.first_name,
-        last_name: userData.data.last_name,
+        housename: "",
+        street: "",
+        city: "",
+        state: "",
+        pincode: "",
       });
+      setHasChanged(false);
     }
   };
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    console.log(addressData.data.address_data.length);
+    // const index = addressData.data.address_data.length;
     const newData = {
-      user_id: userData.data.user_id,
-      uid: userData.data.uid,
-      role: userData.data.role,
-      email: formData.email,
-      tel: formData.tel,
-      first_name: formData.first_name,
-      last_name: formData.last_name,
-      image: userData.data.image,
-      token: userData.data.token,
+      // user_id: addressData.data.user_id,
+      // housename: addressData.data.address_data[index].housename,
+      // street: addressData.data.address_data[index].street,
+      // city: addressData.data.address_data[index].city,
+      // state: addressData.data.address_data[index].state,
+      // pincode: addressData.data.address_data[index].pincode,
+      user_id: addressData.data.user_id,
+      housename: formData.housename,
+      street: formData.street,
+      city: formData.city,
+      state: formData.state,
+      pincode: formData.pincode,
     };
-    await updateUser(newData);
-    (
-      document.getElementById("ModalUpdateProfile") as HTMLDialogElement
-    ).close();
-    onProfileUpdated();
+    await addAddress(newData);
+    (document.getElementById("ModalAddAddress") as HTMLDialogElement).close();
+    onAddressAdd();
   };
 
   return (
     <>
-      <dialog id="ModalUpdateProfile" className="modal">
+      <dialog id="ModalAddAddress" className="modal">
         <div className="modal-box">
           <form method="dialog">
             <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
               ✕
             </button>
           </form>
-          <h3 className="font-bold text-lg">Update Profile</h3>
+          <h3 className="font-bold text-lg">Add Address</h3>
           <form onSubmit={onSubmit} className="flex flex-col gap-4 mt-4">
             <label className="input input-bordered flex items-center gap-2">
               <p className="p-2">
@@ -102,9 +104,9 @@ const ModalUpdateProfile: React.FC<ModalUpdateProfileProps> = ({
               <input
                 type="text"
                 className="grow text-gray-500"
-                placeholder="Email"
-                name="email"
-                value={formData.email}
+                placeholder="House Name"
+                name="housename"
+                value={formData.housename}
                 onChange={handleChange}
               />
             </label>
@@ -115,9 +117,9 @@ const ModalUpdateProfile: React.FC<ModalUpdateProfileProps> = ({
               <input
                 type="text"
                 className="grow text-gray-500"
-                placeholder="First Name"
-                name="first_name"
-                value={formData.first_name}
+                placeholder="Street"
+                name="street"
+                value={formData.street}
                 onChange={handleChange}
               />
             </label>
@@ -128,9 +130,9 @@ const ModalUpdateProfile: React.FC<ModalUpdateProfileProps> = ({
               <input
                 type="text"
                 className="grow text-gray-500"
-                placeholder="Last Name"
-                name="last_name"
-                value={formData.last_name}
+                placeholder="City"
+                name="city"
+                value={formData.city}
                 onChange={handleChange}
               />
             </label>
@@ -141,9 +143,22 @@ const ModalUpdateProfile: React.FC<ModalUpdateProfileProps> = ({
               <input
                 type="text"
                 className="grow text-gray-500"
-                placeholder="Tel"
-                name="tel"
-                value={formData.tel}
+                placeholder="State"
+                name="state"
+                value={formData.state}
+                onChange={handleChange}
+              />
+            </label>
+            <label className="input input-bordered flex items-center gap-2">
+              <p className="p-2">
+                <IconPhone stroke={1.4} size={30} className="text-slate-500" />
+              </p>
+              <input
+                type="text"
+                className="grow text-gray-500"
+                placeholder="Pincode"
+                name="pincode"
+                value={formData.pincode}
                 onChange={handleChange}
               />
             </label>
@@ -154,7 +169,7 @@ const ModalUpdateProfile: React.FC<ModalUpdateProfileProps> = ({
               >
                 <span className="flex justify-center gap-2 items-center">
                   <IconUpload size={20} />
-                  <p className="text-sm">Update Profile</p>
+                  <p className="text-sm">Add Address</p>
                 </span>
               </button>
               {hasChanged && (
@@ -176,4 +191,4 @@ const ModalUpdateProfile: React.FC<ModalUpdateProfileProps> = ({
   );
 };
 
-export default ModalUpdateProfile;
+export default ModalAddAddress;
