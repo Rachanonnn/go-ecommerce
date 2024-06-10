@@ -7,27 +7,28 @@ import {
   IconKey,
   IconAddressBook,
 } from "@tabler/icons-react";
-import React from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useUserAuth } from "@/libs/context/UserAuthContext";
 import Loading from "@/Components/Loading";
 import getUserbyID from "@/libs/user/getUserbyID";
 import ModalUpdateProfile from "@/Components/ModalUpdateProfile";
+import updateUser from "@/libs/user/updateUserbyID";
 
-const page = () => {
-  const [loading, setLoading] = React.useState<boolean>(true);
-  const [userData, setUserData] = React.useState<any>({});
-  const [hasImage, setHasImage] = React.useState<boolean>(false);
+const Page = () => {
+  const [loading, setLoading] = useState<boolean>(true);
+  const [userData, setUserData] = useState<any>({});
+  const [hasImage, setHasImage] = useState<boolean>(false);
 
   const { user } = useUserAuth();
 
-  const fetchData = React.useCallback(async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
     try {
       if (!user) return;
       const response = await getUserbyID(user.uid);
       const { data } = response;
       setUserData(data);
-      if (data.image != "") {
+      if (data.image !== "") {
         setHasImage(true);
       }
     } catch (error) {
@@ -37,9 +38,41 @@ const page = () => {
     }
   }, [user]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (reader.result) {
+          const base64Image = reader.result as string;
+          setUserData((prevData: any) => ({ ...prevData, image: base64Image }));
+          setHasImage(true);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const updateProfile = async (event: any) => {
+    event.preventDefault();
+    const newData = {
+      user_id: userData.user_id,
+      uid: userData.uid,
+      role: userData.role,
+      email: userData.email,
+      tel: userData.tel,
+      first_name: userData.first_name,
+      last_name: userData.last_name,
+      image: userData.image,
+      token: userData.token,
+    };
+    await updateUser(newData);
+    fetchData();
+  };
 
   return (
     <div className="hero min-h-[93vh] bg-base-200">
@@ -47,24 +80,28 @@ const page = () => {
         {loading ? (
           <Loading />
         ) : (
-          <div className="">
+          <div>
             <div className="mb-8 flex flex-col items-center">
-              {hasImage ? (
-                <img
-                  src={userData.image}
-                  // src="https://img.freepik.com/free-psd/3d-render-avatar-character_23-2150611737.jpg?t=st=1717690136~exp=1717693736~hmac=d1b28deddab281a32ed845e29e0b68148cee4cb621e7ba53f726e04d98549581&w=826"
-                  className="w-[17rem] rounded-lg shadow-2xl mb-2"
-                />
-              ) : (
-                <img
-                  src="https://img.freepik.com/free-psd/3d-render-avatar-character_23-2150611737.jpg?t=st=1717690136~exp=1717693736~hmac=d1b28deddab281a32ed845e29e0b68148cee4cb621e7ba53f726e04d98549581&w=826"
-                  className="w-[17rem] rounded-lg shadow-2xl mb-2"
-                />
-              )}
-              <input
-                type="file"
-                className="file-input file-input-bordered w-[17rem] max-w-xs text-center"
+              <img
+                src={
+                  hasImage
+                    ? userData.image
+                    : "https://img.freepik.com/free-psd/3d-render-avatar-character_23-2150611737.jpg"
+                }
+                className="w-[17rem] rounded-lg shadow-2xl mb-2"
+                alt="User Avatar"
               />
+              <div className="flex flex-wrap gap-1">
+                <input
+                  type="file"
+                  className="file-input file-input-bordered w-[17rem] max-w-xs text-center"
+                  onChange={handleFileChange}
+                  accept="image/*"
+                />
+                <button className="btn btn-ghost" onClick={updateProfile}>
+                  Upload
+                </button>
+              </div>
             </div>
             <ModalUpdateProfile onProfileUpdated={fetchData} />
             <div className="w-96 mx-auto flex flex-col gap-4">
@@ -100,13 +137,10 @@ const page = () => {
               <button
                 className="btn btn-primary"
                 onClick={() => {
-                  if (document) {
-                    (
-                      document.getElementById(
-                        "ModalUpdateProfile"
-                      ) as HTMLFormElement
-                    ).showModal();
-                  }
+                  const modal = document.getElementById(
+                    "ModalUpdateProfile"
+                  ) as HTMLFormElement;
+                  if (modal) modal.showModal();
                 }}
               >
                 Update Profile
@@ -119,4 +153,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
