@@ -9,6 +9,7 @@ type UserDataFormat struct {
 	Email     string `json:"email" validate:"required, email" bson:"email,omitempty"`
 	Tel       string `json:"tel" validate:"required" bson:"tel,omitempty"`
 	Role      string `json:"role" bson:"role,omitempty"`
+	Image     string `json:"image" bson:"image,omitempty"`
 }
 
 type AddressDataFormat struct {

@@ -22,6 +22,7 @@ type ICartRepository interface {
 	InsertNewOrder(userID string, data *entities.OrderData) error
 	UpdateOrder(userID string, index int, newData *entities.OrderData) error
 	RemoveOrder(data *entities.CartDataFormat, index int) error
+	UpdateCart(userID string, data *entities.CartDataFormat) error
 }
 
 func NewCartRepository(db *MongoDB) ICartRepository {
@@ -46,10 +47,14 @@ func (repo cartRepository) FindCartByUserID(userID string) (*entities.CartDataFo
 
 	result := entities.CartDataFormat{}
 
-	user := repo.Collection.FindOne(repo.Context, bson.M{"user_id": userID}).Decode(&result)
+	err := repo.Collection.FindOne(repo.Context, bson.M{"user_id": userID}).Decode(&result)
 
-	if user == mongo.ErrNoDocuments {
+	if err == mongo.ErrNoDocuments {
 		return nil, fmt.Errorf("User not found")
+	}
+
+	if err != nil {
+		return nil, err
 	}
 
 	return &result, nil
@@ -108,6 +113,17 @@ func (repo cartRepository) RemoveOrder(data *entities.CartDataFormat, index int)
 	}
 
 	_, err := repo.Collection.UpdateOne(repo.Context, filter, Update)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (repo cartRepository) UpdateCart(userID string, data *entities.CartDataFormat) error {
+
+	_, err := repo.Collection.UpdateOne(repo.Context, bson.M{"user_id": userID}, bson.M{"$set": data})
+
 	if err != nil {
 		return err
 	}
