@@ -1,0 +1,72 @@
+interface AddressData {
+  userID: string;
+  index: number;
+  housename: string;
+  street: string;
+  city: string;
+  state: string;
+  pincode: string;
+}
+
+interface ApiResponse {
+  success: boolean;
+  message: string;
+  data?: any;
+}
+
+export default async function updateAddress({
+  userID,
+  index,
+  housename,
+  street,
+  city,
+  state,
+  pincode,
+}: AddressData): Promise<ApiResponse> {
+  const data: AddressData = {
+    index,
+    userID,
+    housename,
+    street,
+    city,
+    state,
+    pincode,
+  };
+
+  try {
+    const response = await fetch(
+      `${process.env.BACKEND_URL}/api/v1/profile/update_address?id=${userID}&index=${index}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }
+    );
+
+    const responseText = await response.text();
+
+    if (!response.ok) {
+      console.error("Server response (error):", responseText);
+      let errorDetails: any = { message: response.statusText };
+      try {
+        errorDetails = JSON.parse(responseText);
+      } catch (e) {}
+      throw new Error(`Failed to update address: ${errorDetails.message}`);
+    }
+
+    console.log("Server response (success):", responseText);
+    let responseData: ApiResponse;
+    try {
+      responseData = JSON.parse(responseText);
+    } catch (e) {
+      throw new Error("Invalid JSON response from server");
+    }
+
+    return responseData;
+  } catch (error) {
+    console.error("Error:", error);
+    throw error;
+  }
+}
