@@ -1,13 +1,14 @@
 import { useUserAuth } from "@/libs/context/UserAuthContext";
 import addAddress from "@/libs/user/addAddressbyID";
 import getAddressbyID from "@/libs/user/getAddressbyID";
-import getUserbyID from "@/libs/user/getUserbyID";
 import {
   IconRefresh,
   IconUpload,
-  IconMail,
-  IconUser,
-  IconPhone,
+  IconHome,
+  IconRoad,
+  IconBuilding,
+  IconBuildingEstate,
+  IconMailbox,
 } from "@tabler/icons-react";
 import React, { useEffect, useState } from "react";
 
@@ -99,7 +100,7 @@ const ModalAddAddress: React.FC<ModalAddAddressProps> = ({ onAddressAdd }) => {
           <form onSubmit={onSubmit} className="flex flex-col gap-4 mt-4">
             <label className="input input-bordered flex items-center gap-2">
               <p className="p-2">
-                <IconMail stroke={1.4} size={32} className="text-slate-500" />
+                <IconHome stroke={1.4} size={32} className="text-slate-500" />
               </p>
               <input
                 type="text"
@@ -112,7 +113,7 @@ const ModalAddAddress: React.FC<ModalAddAddressProps> = ({ onAddressAdd }) => {
             </label>
             <label className="input input-bordered flex items-center gap-2">
               <p className="p-2">
-                <IconUser stroke={1.4} size={32} className="text-slate-500" />
+                <IconRoad stroke={1.4} size={32} className="text-slate-500" />
               </p>
               <input
                 type="text"
@@ -125,7 +126,11 @@ const ModalAddAddress: React.FC<ModalAddAddressProps> = ({ onAddressAdd }) => {
             </label>
             <label className="input input-bordered flex items-center gap-2">
               <p className="p-2">
-                <IconUser stroke={1.4} size={30} className="text-slate-500" />
+                <IconBuilding
+                  stroke={1.4}
+                  size={30}
+                  className="text-slate-500"
+                />
               </p>
               <input
                 type="text"
@@ -138,7 +143,11 @@ const ModalAddAddress: React.FC<ModalAddAddressProps> = ({ onAddressAdd }) => {
             </label>
             <label className="input input-bordered flex items-center gap-2">
               <p className="p-2">
-                <IconPhone stroke={1.4} size={30} className="text-slate-500" />
+                <IconBuildingEstate
+                  stroke={1.4}
+                  size={30}
+                  className="text-slate-500"
+                />
               </p>
               <input
                 type="text"
@@ -151,7 +160,11 @@ const ModalAddAddress: React.FC<ModalAddAddressProps> = ({ onAddressAdd }) => {
             </label>
             <label className="input input-bordered flex items-center gap-2">
               <p className="p-2">
-                <IconPhone stroke={1.4} size={30} className="text-slate-500" />
+                <IconMailbox
+                  stroke={1.4}
+                  size={30}
+                  className="text-slate-500"
+                />
               </p>
               <input
                 type="text"

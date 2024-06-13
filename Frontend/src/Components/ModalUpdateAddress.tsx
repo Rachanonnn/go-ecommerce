@@ -6,10 +6,12 @@ import { cuteAlert } from "cute-alert";
 import {
   IconRefresh,
   IconUpload,
-  IconMail,
-  IconUser,
-  IconPhone,
   IconTrash,
+  IconMailbox,
+  IconBuildingEstate,
+  IconBuilding,
+  IconRoad,
+  IconHome,
 } from "@tabler/icons-react";
 import React, { useEffect, useState } from "react";
 
@@ -116,7 +118,7 @@ const ModalUpdateAddress: React.FC<ModalAddAddressProps> = ({
           <form onSubmit={onSubmit} className="flex flex-col gap-4 mt-4">
             <label className="input input-bordered flex items-center gap-2">
               <p className="p-2">
-                <IconMail stroke={1.4} size={32} className="text-slate-500" />
+                <IconHome stroke={1.4} size={32} className="text-slate-500" />
               </p>
               <input
                 type="text"
@@ -129,7 +131,7 @@ const ModalUpdateAddress: React.FC<ModalAddAddressProps> = ({
             </label>
             <label className="input input-bordered flex items-center gap-2">
               <p className="p-2">
-                <IconUser stroke={1.4} size={32} className="text-slate-500" />
+                <IconRoad stroke={1.4} size={32} className="text-slate-500" />
               </p>
               <input
                 type="text"
@@ -142,7 +144,11 @@ const ModalUpdateAddress: React.FC<ModalAddAddressProps> = ({
             </label>
             <label className="input input-bordered flex items-center gap-2">
               <p className="p-2">
-                <IconUser stroke={1.4} size={30} className="text-slate-500" />
+                <IconBuilding
+                  stroke={1.4}
+                  size={30}
+                  className="text-slate-500"
+                />
               </p>
               <input
                 type="text"
@@ -155,7 +161,11 @@ const ModalUpdateAddress: React.FC<ModalAddAddressProps> = ({
             </label>
             <label className="input input-bordered flex items-center gap-2">
               <p className="p-2">
-                <IconPhone stroke={1.4} size={30} className="text-slate-500" />
+                <IconBuildingEstate
+                  stroke={1.4}
+                  size={30}
+                  className="text-slate-500"
+                />
               </p>
               <input
                 type="text"
@@ -168,7 +178,11 @@ const ModalUpdateAddress: React.FC<ModalAddAddressProps> = ({
             </label>
             <label className="input input-bordered flex items-center gap-2">
               <p className="p-2">
-                <IconPhone stroke={1.4} size={30} className="text-slate-500" />
+                <IconMailbox
+                  stroke={1.4}
+                  size={30}
+                  className="text-slate-500"
+                />
               </p>
               <input
                 type="text"
