@@ -10,6 +10,7 @@ import updateUser from "@/libs/user/updateUserbyID";
 import ModalAddAddress from "@/Components/ModalAddAddress";
 import getAddressbyID from "@/libs/user/getAddressbyID";
 import Addresses from "@/Components/Addresses";
+import { cuteAlert } from "cute-alert";
 
 interface AddressData {
   user_id: string;
@@ -92,8 +93,8 @@ const Page = () => {
         {loading ? (
           <Loading />
         ) : (
-          <div className="flex flex-wrap justify-center w-[80vw] mx-auto sm:mx-0">
-            <div className="mb-8 flex flex-col justify-center sm:ml-52 sm:mr-32">
+          <div className="flex flex-wrap justify-center w-[80vw] mx-auto md:mx-0">
+            <div className="mb-8 flex flex-col justify-center md:ml-52 md:mr-32">
               <img
                 src={
                   hasImage
@@ -160,13 +161,14 @@ const Page = () => {
                   {addressesData.length > 0 ? (
                     addressesData.map((address, index) => (
                       <Addresses
-                        key={index}
+                        key={address.user_id}
                         housename={address.housename}
                         street={address.street}
                         city={address.city}
                         state={address.state}
                         pincode={address.pincode}
                         index={index}
+                        fetchData={fetchData}
                       />
                     ))
                   ) : (
@@ -189,7 +191,12 @@ const Page = () => {
                   <button
                     className="btn btn-primary rounded-lg"
                     onClick={() => {
-                      alert("You have reached the maximum number of addresses");
+                      cuteAlert({
+                        type: "info",
+                        title: "Addresses",
+                        description: "You has reach the limit of 3 addresses",
+                        primaryButtonText: "Confirm",
+                      });
                     }}
                   >
                     Add Address
