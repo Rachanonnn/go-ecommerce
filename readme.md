@@ -89,13 +89,6 @@ Base URL: `/api/v1/product`
 - **PUT /update_product**: Update product information
 - **DELETE /delete_product**: Delete a product
 
-### Google Authentication
-
-Base URL: `/api/v1`
-
-- **GET /google**: Initiate Google authentication
-- **GET /google_callback**: Google authentication callback
-
 ## Project Structure
 
 - **gateways**: Contains the gateway functions for user and product management.
@@ -133,25 +126,3 @@ Please feel free to submit issues, fork the repository, and send pull requests.
 - backend | add uid generate when user sign in to database
 - backend | add token generate when user sign in to database
 - backend | support sign in with firebase email and password
-
-# To-Do Backend
-
-- [x] Google OAuth 2.0
-
-- [x] CRUD UserData
-
-- [x] CRUD Product
-
-- [x] CRUD Address
-
-- [ ] Log Product
-
-- [ ] Search Product
-
-- [x] List Cart
-
-- [ ] Payment
-
-# To-Do Frontend
-
-- [x] after register then send user data to backend
