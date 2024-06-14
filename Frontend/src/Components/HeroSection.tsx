@@ -13,8 +13,8 @@ const HeroSection = () => {
               Explore our site to discover a curated selection of products and
               enjoy hassle-free shopping at your fingertips!
             </p>
-            <a className="btn btn-primary" href="/products">
-              Get Product All
+            <a className="btn btn-primary" href="/home">
+              Get Started
             </a>
           </div>
         </div>
