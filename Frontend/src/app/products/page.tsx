@@ -1,10 +1,11 @@
 "use client";
 
 import getAllProducts from "@/libs/product/getProduct";
-import React from "react";
+import React, { useRef } from "react";
 import ProductCard from "@/Components/ProductCard";
 import ModalAddProduct from "@/Components/ModalAddProduct";
 import ProductCardSkeleton from "@/Components/ProductCardSkeleton";
+import { motion, useInView } from "framer-motion";
 
 // Define the Product interface
 interface Product {
@@ -18,6 +19,8 @@ const Page = () => {
   // Use the Product interface to type the state
   const [productData, setProductData] = React.useState<Product[]>([]);
   const [loading, setLoading] = React.useState<boolean>(true);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
 
   const fetchProducts = React.useCallback(() => {
     setLoading(true);
@@ -31,6 +34,11 @@ const Page = () => {
   React.useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
+
+  const cardVariants = {
+    initial: { y: 50, opacity: 0 },
+    animate: { y: 0, opacity: 1 },
+  };
 
   return (
     <div className="min-h-screen">
@@ -52,19 +60,30 @@ const Page = () => {
           Add Product
         </button>
       </div>
-      <div className="flex flex-wrap gap-5 justify-center items-center mx-auto mt-10 m-4">
+      <div
+        ref={ref}
+        className="flex flex-wrap gap-5 justify-center items-center mx-auto mt-10 m-4"
+      >
         {loading
           ? Array.from({ length: 8 }).map((_, index) => (
               <ProductCardSkeleton key={index} />
             ))
           : productData.map((product, index) => (
-              <ProductCard
-                key={index}
-                name={product.product_name}
-                price={product.price}
-                productId={product.product_id}
-                index={index}
-              />
+              <motion.div
+                key={product.product_id}
+                variants={cardVariants}
+                initial="initial"
+                animate={isInView ? "animate" : "initial"}
+                transition={{ duration: 0.2, delay: 0.1 * index }}
+              >
+                <ProductCard
+                  key={index}
+                  name={product.product_name}
+                  price={product.price}
+                  productId={product.product_id}
+                  index={index}
+                />
+              </motion.div>
             ))}
       </div>
     </div>

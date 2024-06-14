@@ -65,14 +65,28 @@ const Navbar = () => {
     }
   };
   return (
-    <>
-      <div className="navbar bg-base-100">
-        <div className="flex-1">
+    <div>
+      <div className="navbar bg-base-100 gap-4">
+        <div className="flex">
           <button
             onClick={() => router.push("/")}
             className="btn btn-ghost text-xl"
           >
             E-Commerce
+          </button>
+        </div>
+        <div className="flex flex-row justify-start mr-auto gap-4">
+          <button
+            className="btn btn-ghost p-2"
+            onClick={() => router.push("/home")}
+          >
+            Home
+          </button>
+          <button
+            className="btn btn-ghost p-2"
+            onClick={() => router.push("/products")}
+          >
+            Products
           </button>
         </div>
         <div className="flex-none">
@@ -166,7 +180,7 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
