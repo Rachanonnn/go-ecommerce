@@ -19,6 +19,7 @@ import addUser from "@/libs/user/addUsertoData";
 import getUserbyID from "@/libs/user/getUserbyID";
 import setToken from "@/libs/user/cookies";
 import { deleteCookie } from "cookies-next";
+import { useRouter } from "next/navigation";
 
 interface AuthContextType {
   user: User | null;
@@ -36,11 +37,17 @@ export const UserAuthContextProvider = ({
 }) => {
   const [user, setUser] = useState<User | null>(null);
 
+  const router = useRouter();
+
   const logIn = async (email: string, password: string) => {
     const userData = await signInWithEmailAndPassword(auth, email, password);
     const user = await getUserbyID(userData.user.uid);
     const token: string = user.data.token;
     await setToken(token);
+    router.push("/website/home");
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
   };
 
   const signUp = async (userNewData: any) => {
@@ -58,10 +65,15 @@ export const UserAuthContextProvider = ({
       role: "user",
     };
     await addUser(newUser);
+    router.push("/website/home");
+    // setTimeout(() => {
+    //   window.location.reload();
+    // }, 1000);
   };
 
   const logOut = async () => {
     deleteCookie("token");
+    router.push("/website/login");
     return signOut(auth);
   };
 
