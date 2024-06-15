@@ -1,7 +1,9 @@
+import withVideos from 'next-videos';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     env: {
-        BACKEND_URL: process.env.BACKEND_URL, // pulls from .env file
+        BACKEND_URL: process.env.BACKEND_URL,
         FIREBASE_CONFIG: process.env.FIREBASE_CONFIG,
         FIREBASE_API_KEY: process.env.FIREBASE_API_KEY,
         FIREBASE_AUTH_DOMAIN: process.env.FIREBASE_AUTH_DOMAIN,
@@ -13,4 +15,4 @@ const nextConfig = {
     },
 };
 
-export default nextConfig;
+export default withVideos(nextConfig);

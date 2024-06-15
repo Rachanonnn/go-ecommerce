@@ -30,7 +30,6 @@ export const RegisterForm = () => {
     setError("");
     try {
       await signUp(newUser);
-      router.push("/");
     } catch (err: any) {
       setError(err.message);
     }
@@ -103,7 +102,7 @@ export const RegisterForm = () => {
           Already have an account?{" "}
           <span
             className="underline text-emerald-400 cursor-pointer hover:text-emerald-500 duration-300"
-            onClick={() => router.push("/login")}
+            onClick={() => router.push("/website/login")}
           >
             Sign in
           </span>

@@ -59,7 +59,7 @@ const Navbar = () => {
   const handleLogout = async () => {
     try {
       await logOut();
-      router.push("/login");
+      router.push("/website/login");
     } catch (error) {
       console.log(error);
     }
@@ -78,13 +78,13 @@ const Navbar = () => {
         <div className="flex flex-row justify-start mr-auto gap-4">
           <button
             className="btn btn-ghost p-2"
-            onClick={() => router.push("/home")}
+            onClick={() => router.push("/website/home")}
           >
             Home
           </button>
           <button
             className="btn btn-ghost p-2"
-            onClick={() => router.push("/products")}
+            onClick={() => router.push("/website/products")}
           >
             Products
           </button>
@@ -122,7 +122,7 @@ const Navbar = () => {
                 <span className="text-info">Total: ${totalCartPrice}</span>
                 <div className="card-actions">
                   <button
-                    onClick={() => router.push("/cart")}
+                    onClick={() => router.push("/website/cart")}
                     className="btn btn-primary btn-block"
                   >
                     View cart
@@ -152,7 +152,7 @@ const Navbar = () => {
               {isToken ? (
                 <>
                   <li>
-                    <a href="/profile" className="justify-between">
+                    <a href="/website/profile" className="justify-between">
                       Profile
                     </a>
                   </li>
@@ -169,10 +169,12 @@ const Navbar = () => {
               ) : (
                 <>
                   <li>
-                    <a onClick={() => router.push("/login")}>Sign in</a>
+                    <a onClick={() => router.push("/website/login")}>Sign in</a>
                   </li>
                   <li>
-                    <a onClick={() => router.push("/register")}>Register</a>
+                    <a onClick={() => router.push("/website/register")}>
+                      Register
+                    </a>
                   </li>
                 </>
               )}

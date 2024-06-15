@@ -16,8 +16,6 @@ export const LoginForm = () => {
     setError("");
     try {
       await logIn(email, password);
-      router.push("/");
-      window.location.reload();
     } catch (err: any) {
       setError(err.message);
     }

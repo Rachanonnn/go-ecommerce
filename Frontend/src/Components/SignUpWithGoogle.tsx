@@ -26,10 +26,10 @@ export const SignUpWithGoogle = () => {
     newAuth
       .signInWithPopup(provider)
       .then(() => {
-        router.push("/");
+        router.push("/website/home");
         setTimeout(() => {
           window.location.reload();
-        }, 500);
+        }, 1000);
       })
       .catch((error) => {
         console.error("Error during sign-in:", error);
