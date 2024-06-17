@@ -56,7 +56,6 @@ const Page = () => {
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
-      console.log(event.target.files[0]);
       const selectedFile = event.target.files[0];
       setFile(selectedFile);
       setFilePreview(URL.createObjectURL(selectedFile));

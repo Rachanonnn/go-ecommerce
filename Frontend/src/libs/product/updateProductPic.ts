@@ -28,7 +28,9 @@ export default async function updateProductImage(
       try {
         errorDetails = JSON.parse(responseText);
       } catch (e) {}
-      throw new Error(`Failed to update user: ${errorDetails.message}`);
+      throw new Error(
+        `Failed to update product image: ${errorDetails.message}`
+      );
     }
 
     console.log("Server response (success):", responseText);

@@ -1,5 +1,4 @@
-import addProduct from "@/libs/product/addProduct";
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import {
   IconStack,
   IconPackage,
@@ -7,6 +6,9 @@ import {
   IconRefresh,
   IconUpload,
 } from "@tabler/icons-react";
+import addProduct from "@/libs/product/addProduct";
+import updateProductImage from "@/libs/product/updateProductPic";
+import getAllProducts from "@/libs/product/getProduct";
 
 interface ModalAddProductProps {
   onProductAdded: () => void;
@@ -16,22 +18,18 @@ interface PostProductData {
   product_name: string;
   quantity: number;
   price: number;
-  file: File;
 }
 
 const ModalAddProduct: React.FC<ModalAddProductProps> = ({
   onProductAdded,
 }) => {
-  const [file, setFile] = useState<File | undefined>(undefined);
+  const [file, setFile] = useState<File | null>(null);
   const [filePreview, setFilePreview] = useState<string>("");
-
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<PostProductData>({
     product_name: "",
     quantity: 0,
     price: 0,
   });
-
-  const modalRef = useRef<HTMLDialogElement>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -45,7 +43,7 @@ const ModalAddProduct: React.FC<ModalAddProductProps> = ({
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value,
+      [name]: name === "quantity" || name === "price" ? Number(value) : value,
     });
   };
 
@@ -55,67 +53,68 @@ const ModalAddProduct: React.FC<ModalAddProductProps> = ({
       quantity: 0,
       price: 0,
     });
-    setFile(undefined);
-    setFilePreview("");
-  };
-
-  const handleClose = () => {
-    if (modalRef.current) {
-      modalRef.current.close();
+    setFile(null);
+    if (filePreview) {
+      URL.revokeObjectURL(filePreview);
+      setFilePreview("");
     }
   };
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!file) {
-      console.error("File is required");
-      return;
-    }
+    if (!file) return;
 
     const newProduct: PostProductData = {
       product_name: formData.product_name,
       quantity: formData.quantity,
       price: formData.price,
-      file: file,
     };
 
     try {
       await addProduct(newProduct);
-      handleClose();
+      const products = await getAllProducts();
+      const latestProduct = products.data.length;
+      const index = latestProduct.toString();
+
+      await updateProductImage(index, file);
       onProductAdded();
+      handlerClear();
+      (document.getElementById("modalAddProduct") as HTMLDialogElement).close();
     } catch (error) {
       console.error("Error adding product:", error);
     }
   };
 
   return (
-    <dialog ref={modalRef} id="modalAddProduct" className="modal">
+    <dialog id="modalAddProduct" className="modal">
       <div className="modal-box">
         <form method="dialog">
-          <button
-            className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-            onClick={handleClose}
-          >
+          <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
             ✕
           </button>
         </form>
-        <h3 className="font-bold text-lg">Add Product</h3>
-        <form onSubmit={onSubmit} className="flex flex-col gap-4 mt-4">
+        <h3 id="add-product-modal" className="font-bold text-lg">
+          Add Product
+        </h3>
+        <div className="mt-2 w-full flex flex-col items-center">
           <img
             src={
               filePreview ||
               "https://images3.alphacoders.com/133/thumbbig-1331510.webp"
             }
-            className="shadow-3xl mb-2"
+            className="shadow-3xl mb-2 rounded-2xl"
             alt="Product Preview"
           />
           <input
             type="file"
-            className="file-input file-input-bordered w-full max-w-xs mx-auto"
+            className="file-input file-input-bordered max-w-xs"
             onChange={handleFileChange}
             accept="image/*"
+            required
           />
+        </div>
+        <form onSubmit={onSubmit} className="flex flex-col gap-4 mt-4">
           <label className="input input-bordered flex items-center gap-2">
             <p className="p-2">
               <IconPackage stroke={1.4} size={32} />
@@ -128,6 +127,7 @@ const ModalAddProduct: React.FC<ModalAddProductProps> = ({
               value={formData.product_name}
               onChange={handleChange}
               required
+              aria-label="Product Name"
             />
           </label>
           <label className="input input-bordered flex items-center gap-2">
@@ -142,6 +142,7 @@ const ModalAddProduct: React.FC<ModalAddProductProps> = ({
               value={formData.quantity}
               onChange={handleChange}
               required
+              aria-label="Quantity"
             />
           </label>
           <label className="input input-bordered flex items-center gap-2">
@@ -156,12 +157,14 @@ const ModalAddProduct: React.FC<ModalAddProductProps> = ({
               value={formData.price}
               onChange={handleChange}
               required
+              aria-label="Price"
             />
           </label>
           <div className="gap-2 flex flex-col">
             <button
               type="submit"
               className="btn btn-primary mt-4 w-full text-white"
+              aria-label="Add Product"
             >
               <span className="flex justify-center gap-2 items-center">
                 <IconUpload size={20} />
@@ -172,6 +175,7 @@ const ModalAddProduct: React.FC<ModalAddProductProps> = ({
               type="button"
               className="btn btn-primary w-full text-white"
               onClick={handlerClear}
+              aria-label="Clear Form"
             >
               <span className="flex justify-center gap-2 items-center">
                 <IconRefresh size={20} />

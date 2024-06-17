@@ -2,27 +2,31 @@ interface PostProductData {
   product_name: string;
   quantity: number;
   price: number;
-  file: File;
 }
 
 export default async function addProduct({
   product_name,
   quantity,
   price,
-  file,
 }: PostProductData): Promise<any> {
-  const formData = new FormData();
-  formData.append("product_name", product_name);
-  formData.append("quantity", quantity.toString());
-  formData.append("price", price.toString());
-  formData.append("image", file);
+  const data: PostProductData = {
+    product_name,
+    quantity,
+    price,
+  };
+
+  // Log the payload to ensure it's correct
+  console.log("Sending data:", JSON.stringify(data));
 
   try {
     const response = await fetch(
       `${process.env.BACKEND_URL}/api/v1/product/add_product`,
       {
         method: "POST",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
       }
     );
 
@@ -34,7 +38,7 @@ export default async function addProduct({
       try {
         errorDetails = JSON.parse(responseText);
       } catch (e) {
-        throw new Error(`Failed to fetch product: ${response.statusText}`);
+        throw new Error(`Failed to fetch product: ${responseText}`);
       }
       throw new Error(
         `Failed to fetch product: ${

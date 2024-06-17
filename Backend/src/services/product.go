@@ -15,7 +15,7 @@ type productService struct {
 type IProductService interface {
 	GetAllProduct() ([]entities.ProductDataFormat, error)
 	GetProductByID(productID string) (*entities.ProductDataFormat, error)
-	InsertNewProduct(data *entities.ProductDataFormat, file []byte) bool
+	InsertNewProduct(data *entities.ProductDataFormat) bool
 	UpdateProduct(productID string, data *entities.ProductDataFormat) error
 	DeleteProduct(productID string) error
 	UpdateProductPicture(productID string, file []byte) error
@@ -65,7 +65,7 @@ func (sv productService) GenerateNewProductID() (int, error) {
 	return newID, nil
 }
 
-func (sv productService) InsertNewProduct(data *entities.ProductDataFormat, file []byte) bool {
+func (sv productService) InsertNewProduct(data *entities.ProductDataFormat) bool {
 	newID, err := sv.GenerateNewProductID()
 	if err != nil {
 		return false
@@ -76,16 +76,6 @@ func (sv productService) InsertNewProduct(data *entities.ProductDataFormat, file
 	if data.Name == "" || data.Price == 0 || data.Quantity == 0 {
 		return false
 	}
-
-	keyName, contentType := utils.CreateKeyNameProductImage(data, "webp", "")
-
-	imageURL, err := utils.UploadS3FromString(file, keyName, contentType)
-
-	if err != nil {
-		return false
-	}
-
-	data.Image = imageURL
 
 	status := sv.ProductRepository.InsertNewProduct(data)
 

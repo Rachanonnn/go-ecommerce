@@ -16,12 +16,11 @@ const ProductCard: React.FC<Props> = ({
   productId,
   image,
 }) => {
-  // console.log(index);
   return (
     <div>
       <div className="card card-compact w-96 bg-base-100 shadow-xl hover:scale-[1.02] duration-300">
         <figure>
-          <img src="/mock_sneakers/1.png" alt="Shoes" />
+          <img src={image} />
         </figure>
         <div className="card-body">
           <h2 className="card-title">{name}</h2>
