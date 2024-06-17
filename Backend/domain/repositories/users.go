@@ -23,7 +23,9 @@ type IUsersRepository interface {
 	InsertNewUser(data *entities.UserDataFormat) bool
 	FindAll() ([]entities.UserDataFormat, error)
 	FindByID(userID string) (*entities.UserDataFormat, error)
+	FindByUID(uid string) (*entities.UserDataFormat, error)
 	UpdateUser(userID string, newData *entities.UserDataFormat) error
+	UpdateUserbyUID(UID string, newData *entities.UserDataFormat) error
 	DeleteUser(userID string) error
 }
 
@@ -71,10 +73,21 @@ func (repo usersRepository) FindByID(userID string) (*entities.UserDataFormat, e
 
 	user := repo.Collection.FindOne(repo.Context, bson.M{"user_id": userID}).Decode(&result)
 
-	fmt.Println(result)
+	if user == mongo.ErrNoDocuments {
+		return nil, fmt.Errorf("user not found")
+	}
+
+	return &result, nil
+}
+
+func (repo usersRepository) FindByUID(uid string) (*entities.UserDataFormat, error) {
+
+	result := entities.UserDataFormat{}
+
+	user := repo.Collection.FindOne(repo.Context, bson.M{"uid": uid}).Decode(&result)
 
 	if user == mongo.ErrNoDocuments {
-		return nil, fmt.Errorf("User not found")
+		return nil, fmt.Errorf("user not found")
 	}
 
 	return &result, nil
@@ -84,14 +97,23 @@ func (repo usersRepository) UpdateUser(userID string, newData *entities.UserData
 
 	_, err := repo.Collection.UpdateOne(repo.Context, bson.M{"user_id": userID}, bson.M{"$set": newData})
 
-	fmt.Println(err)
-
 	if err != nil {
 		return err
 	}
 
 	return nil
 
+}
+
+func (repo usersRepository) UpdateUserbyUID(UID string, newData *entities.UserDataFormat) error {
+
+	_, err := repo.Collection.UpdateOne(repo.Context, bson.M{"uid": UID}, bson.M{"$set": newData})
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (repo usersRepository) DeleteUser(userID string) error {

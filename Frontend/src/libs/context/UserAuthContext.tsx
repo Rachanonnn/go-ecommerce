@@ -36,7 +36,6 @@ export const UserAuthContextProvider = ({
   children: ReactNode;
 }) => {
   const [user, setUser] = useState<User | null>(null);
-
   const router = useRouter();
 
   const logIn = async (email: string, password: string) => {
@@ -45,9 +44,9 @@ export const UserAuthContextProvider = ({
     const token: string = user.data.token;
     await setToken(token);
     router.push("/website/home");
-    setTimeout(() => {
-      window.location.reload();
-    }, 1000);
+    // setTimeout(() => {
+    //   window.location.reload();
+    // }, 1000);
   };
 
   const signUp = async (userNewData: any) => {
@@ -66,9 +65,6 @@ export const UserAuthContextProvider = ({
     };
     await addUser(newUser);
     router.push("/website/home");
-    // setTimeout(() => {
-    //   window.location.reload();
-    // }, 1000);
   };
 
   const logOut = async () => {
@@ -82,7 +78,6 @@ export const UserAuthContextProvider = ({
       const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
         setUser(currentUser);
       });
-
       return () => {
         unsubscribe();
       };

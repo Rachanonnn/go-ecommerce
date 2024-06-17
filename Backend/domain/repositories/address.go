@@ -74,7 +74,7 @@ func (repo addressRepository) FindAddressByUserID(userID string) (*entities.Addr
 	fmt.Println(result)
 
 	if user == mongo.ErrNoDocuments {
-		return nil, fmt.Errorf("User not found")
+		return nil, fmt.Errorf("user not found")
 	}
 
 	return &result, nil

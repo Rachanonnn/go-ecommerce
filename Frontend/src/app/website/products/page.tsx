@@ -13,6 +13,7 @@ interface Product {
   product_name: string;
   quantity: number;
   price: number;
+  image: string;
 }
 
 const Page = () => {
@@ -26,7 +27,13 @@ const Page = () => {
     setLoading(true);
     getAllProducts().then((response) => {
       const { data } = response;
-      setProductData(data);
+      const updatedData = data.map((product: Product) => ({
+        ...product,
+        image:
+          product.image ||
+          "https://images3.alphacoders.com/133/thumbbig-1331510.webp",
+      }));
+      setProductData(updatedData);
       setLoading(false);
     });
   }, []);
@@ -82,6 +89,7 @@ const Page = () => {
                   price={product.price}
                   productId={product.product_id}
                   index={index}
+                  image={product.image}
                 />
               </motion.div>
             ))}

@@ -1,7 +1,9 @@
 package gateways
 
 import (
+	"fmt"
 	"go-ecommerce/domain/entities"
+	"io/ioutil"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -36,11 +38,30 @@ func (h HTTPGateway) CreateNewProduct(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseMessage{Message: "invalid json body"})
 	}
 
-	status := h.ProductService.InsertNewProduct(&bodyData)
-
-	if !status {
-		return ctx.Status(fiber.StatusForbidden).JSON(entities.ResponseModel{Message: "cannot insert product."})
+	imagefile, err := ctx.FormFile("image")
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "image not found"})
 	}
+
+	if imagefile != nil {
+		fileContent, err := imagefile.Open()
+		if err != nil {
+			return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "Failed to open uploaded file"})
+		}
+		defer fileContent.Close()
+
+		fileBytes, err := ioutil.ReadAll(fileContent)
+		if err != nil {
+			return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "Failed to read uploaded file"})
+		}
+
+		status := h.ProductService.InsertNewProduct(&bodyData, fileBytes)
+
+		if !status {
+			return ctx.Status(fiber.StatusForbidden).JSON(entities.ResponseModel{Message: "cannot insert product."})
+		}
+	}
+
 	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "success"})
 }
 
@@ -84,6 +105,41 @@ func (h HTTPGateway) DeleteProduct(ctx *fiber.Ctx) error {
 
 	if err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "cannot delete product"})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "success"})
+}
+
+func (h HTTPGateway) UploadProductPicture(ctx *fiber.Ctx) error {
+
+	params := ctx.Queries()
+
+	if len(params) <= 0 {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "user id not fill"})
+	}
+
+	productID := params["product_id"]
+
+	imagefile, err := ctx.FormFile("image")
+	if err != nil || imagefile == nil {
+		fmt.Println("imagefile:", imagefile)
+	}
+
+	if imagefile != nil {
+		fileContent, err := imagefile.Open()
+		if err != nil {
+			return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "Failed to open uploaded file"})
+		}
+		defer fileContent.Close()
+
+		fileBytes, err := ioutil.ReadAll(fileContent)
+		if err != nil {
+			return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "Failed to read uploaded file"})
+		}
+
+		if err = h.ProductService.UpdateProductPicture(productID, fileBytes); err != nil {
+			return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "Failed to update product picture"})
+		}
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "success"})

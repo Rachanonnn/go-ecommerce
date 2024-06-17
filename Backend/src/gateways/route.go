@@ -11,14 +11,18 @@ func GatewayUsers(gateway HTTPGateway, app *fiber.App) {
 	apiProfile.Get("/get_user_by_id", gateway.GetUserById)
 	apiProfile.Put("/update_user", gateway.UpdateUser)
 	apiProfile.Delete("/delete_users", gateway.DeleteUser)
+
 	apiProfile.Get("/get_address_by_user_id", gateway.GetAddressByUserID)
 	apiProfile.Post("/add_address", gateway.AddNewAddress)
 	apiProfile.Put("/update_address", gateway.UpdateAddress)
 	apiProfile.Delete("/delete_address", gateway.DeleteAddress)
+
 	apiProfile.Get("/get_orders_by_user_id", gateway.GetOrdersByUserID)
 	apiProfile.Post("/add_order", gateway.AddtoCart)
 	apiProfile.Put("/update_order", gateway.UpdateOrder)
 	apiProfile.Delete("/delete_order", gateway.DeleteOrder)
+
+	apiProfile.Post("/upload_profile_picture", gateway.UploadProfilePicture)
 }
 
 func GatewayProducts(gateway HTTPGateway, app *fiber.App) {
@@ -30,6 +34,8 @@ func GatewayProducts(gateway HTTPGateway, app *fiber.App) {
 	apiProduct.Post("/add_product", gateway.CreateNewProduct)
 	apiProduct.Put("/update_product", gateway.UpdateProduct)
 	apiProduct.Delete("/delete_product", gateway.DeleteProduct)
+
+	apiProduct.Post("/upload_product_picture", gateway.UploadProductPicture)
 }
 
 func GatewayGoogle(gateway HTTPGateway, app *fiber.App) {

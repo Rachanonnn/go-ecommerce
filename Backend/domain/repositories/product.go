@@ -66,7 +66,7 @@ func (repo productRepository) FindProductByID(productID string) (*entities.Produ
 	fmt.Println(result)
 
 	if product == mongo.ErrNoDocuments {
-		return nil, fmt.Errorf("Product not found")
+		return nil, fmt.Errorf("product not found")
 	}
 
 	return &result, nil

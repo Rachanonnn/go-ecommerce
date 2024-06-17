@@ -13,7 +13,11 @@ require (
 	golang.org/x/oauth2 v0.20.0
 )
 
-require cloud.google.com/go/compute/metadata v0.3.0 // indirect
+require (
+	cloud.google.com/go/compute/metadata v0.3.0 // indirect
+	github.com/aws/aws-sdk-go v1.54.2 // indirect
+	github.com/jmespath/go-jmespath v0.4.0 // indirect
+)
 
 require (
 	github.com/MicahParks/keyfunc/v2 v2.1.0 // indirect

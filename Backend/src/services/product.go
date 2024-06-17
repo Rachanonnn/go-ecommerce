@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"go-ecommerce/domain/entities"
 	"go-ecommerce/domain/repositories"
+	"go-ecommerce/src/utils"
 	"strconv"
 )
 
@@ -14,9 +15,10 @@ type productService struct {
 type IProductService interface {
 	GetAllProduct() ([]entities.ProductDataFormat, error)
 	GetProductByID(productID string) (*entities.ProductDataFormat, error)
-	InsertNewProduct(data *entities.ProductDataFormat) bool
+	InsertNewProduct(data *entities.ProductDataFormat, file []byte) bool
 	UpdateProduct(productID string, data *entities.ProductDataFormat) error
 	DeleteProduct(productID string) error
+	UpdateProductPicture(productID string, file []byte) error
 }
 
 func NewProductService(repo0 repositories.IProductRepository) IProductService {
@@ -63,17 +65,28 @@ func (sv productService) GenerateNewProductID() (int, error) {
 	return newID, nil
 }
 
-func (sv productService) InsertNewProduct(data *entities.ProductDataFormat) bool {
-	// Generate a new product ID
+func (sv productService) InsertNewProduct(data *entities.ProductDataFormat, file []byte) bool {
 	newID, err := sv.GenerateNewProductID()
 	if err != nil {
 		return false
 	}
 
-	// Assign the generated product ID to the data
 	data.ProductID = strconv.Itoa(newID)
 
-	// Call the repository to insert the new product
+	if data.Name == "" || data.Price == 0 || data.Quantity == 0 {
+		return false
+	}
+
+	keyName, contentType := utils.CreateKeyNameProductImage(data, "webp", "")
+
+	imageURL, err := utils.UploadS3FromString(file, keyName, contentType)
+
+	if err != nil {
+		return false
+	}
+
+	data.Image = imageURL
+
 	status := sv.ProductRepository.InsertNewProduct(data)
 
 	return status
@@ -104,6 +117,30 @@ func (sv productService) DeleteProduct(productID string) error {
 	err = sv.ProductRepository.DeleteProduct(productID)
 
 	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (sv productService) UpdateProductPicture(productID string, file []byte) error {
+	data, err := sv.ProductRepository.FindProductByID(productID)
+
+	if err != nil {
+		return fmt.Errorf("can't find product")
+	}
+
+	keyName, contentType := utils.CreateKeyNameProductImage(data, "webp", "")
+
+	imageURL, err := utils.UploadS3FromString(file, keyName, contentType)
+
+	if err != nil {
+		return fmt.Errorf("error uploading image")
+	}
+
+	data.Image = imageURL
+
+	if err := sv.ProductRepository.UpdateProduct(productID, data); err != nil {
 		return err
 	}
 

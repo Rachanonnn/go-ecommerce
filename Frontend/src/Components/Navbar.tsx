@@ -9,52 +9,60 @@ import getUserbyID from "@/libs/user/getUserbyID";
 
 const Navbar = () => {
   const router = useRouter();
-  const { user } = useUserAuth();
+  const { user, logOut } = useUserAuth();
   const [cartItems, setCartItems] = useState(0);
-  const [totalCartPrice, setTotalCartPrice] = React.useState<number>(0);
-  const [userData, setUserData] = React.useState<any>({});
-  const [hasImage, setHasImage] = React.useState<boolean>(false);
+  const [totalCartPrice, setTotalCartPrice] = useState<number>(0);
+  const [userData, setUserData] = useState<any>({});
+  const [hasImage, setHasImage] = useState<boolean>(false);
 
-  const fetchCartItems = useCallback(async () => {
+  const fetchUserData = useCallback(async (userId: string) => {
     try {
-      if (!user) return; // Check if user exists
-      const response = await getitemfromcart(user.uid);
-      const cartItemCount = response.data.cart_data.length;
-      const totalCartPrice = response.data.total;
+      const userResponse = await getUserbyID(userId);
+      const fetchedUserData = userResponse.data;
+      setUserData(fetchedUserData);
+      setHasImage(fetchedUserData.image !== "");
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  }, []);
+
+  const fetchCartItems = useCallback(async (userId: string) => {
+    try {
+      const cartResponse = await getitemfromcart(userId);
+      const cartItemCount = cartResponse.data.cart_data.length;
+      const totalCartPrice = cartResponse.data.total;
+
       setCartItems(cartItemCount);
       setTotalCartPrice(totalCartPrice);
-      const fetchData = await getUserbyID(user.uid);
-      setUserData(fetchData.data);
-      if (fetchData.data.image != "") {
-        setHasImage(true);
-      }
     } catch (error) {
-      console.error("Error fetching order data:", error);
+      console.error("Error fetching cart data:", error);
     }
-  }, [user]);
+  }, []);
 
   useEffect(() => {
-    fetchCartItems();
-  }, [fetchCartItems, user]);
+    if (user) {
+      fetchUserData(user.uid);
+      fetchCartItems(user.uid);
+    }
+  }, [user, fetchUserData, fetchCartItems]);
 
   useEffect(() => {
     const handleCartUpdate = () => {
-      fetchCartItems();
+      if (user) {
+        fetchCartItems(user.uid);
+      }
     };
     window.addEventListener("cartUpdated", handleCartUpdate);
-
     return () => {
       window.removeEventListener("cartUpdated", handleCartUpdate);
     };
-  }, [fetchCartItems]);
+  }, [fetchCartItems, user]);
 
-  const { logOut } = useUserAuth();
-  // checkCookies();
-  const [isToken, setIsToken] = React.useState(false);
+  const [isToken, setIsToken] = useState(false);
 
   useEffect(() => {
     setIsToken(checkCookies());
-  });
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -64,6 +72,7 @@ const Navbar = () => {
       console.log(error);
     }
   };
+
   return (
     <div>
       <div className="navbar bg-base-100 gap-4">
@@ -138,11 +147,14 @@ const Navbar = () => {
               className="btn btn-ghost btn-circle avatar"
             >
               <div className="w-10 rounded-full">
-                {hasImage ? (
-                  <img src={userData.image} />
-                ) : (
-                  <img src="https://img.freepik.com/free-psd/3d-render-avatar-character_23-2150611737.jpg?t=st=1717690136~exp=1717693736~hmac=d1b28deddab281a32ed845e29e0b68148cee4cb621e7ba53f726e04d98549581&w=826" />
-                )}
+                <img
+                  src={
+                    hasImage
+                      ? userData.image
+                      : "https://img.freepik.com/free-psd/3d-render-avatar-character_23-2150611737.jpg"
+                  }
+                  alt="User Avatar"
+                />
               </div>
             </div>
             <ul
@@ -157,13 +169,7 @@ const Navbar = () => {
                     </a>
                   </li>
                   <li>
-                    <a
-                      onClick={() => {
-                        handleLogout();
-                      }}
-                    >
-                      Logout
-                    </a>
+                    <a onClick={handleLogout}>Logout</a>
                   </li>
                 </>
               ) : (

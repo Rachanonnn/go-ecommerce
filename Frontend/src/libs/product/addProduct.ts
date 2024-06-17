@@ -2,28 +2,27 @@ interface PostProductData {
   product_name: string;
   quantity: number;
   price: number;
+  file: File;
 }
 
 export default async function addProduct({
   product_name,
   quantity,
   price,
+  file,
 }: PostProductData): Promise<any> {
-  const data: PostProductData = {
-    product_name,
-    quantity,
-    price,
-  };
+  const formData = new FormData();
+  formData.append("product_name", product_name);
+  formData.append("quantity", quantity.toString());
+  formData.append("price", price.toString());
+  formData.append("image", file);
 
   try {
     const response = await fetch(
       `${process.env.BACKEND_URL}/api/v1/product/add_product`,
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+        body: formData,
       }
     );
 

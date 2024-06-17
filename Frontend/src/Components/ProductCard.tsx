@@ -6,9 +6,16 @@ interface Props {
   price: number;
   productId: string;
   index: number;
+  image: string;
 }
 
-const ProductCard: React.FC<Props> = ({ index, name, price, productId }) => {
+const ProductCard: React.FC<Props> = ({
+  index,
+  name,
+  price,
+  productId,
+  image,
+}) => {
   // console.log(index);
   return (
     <div>
@@ -19,7 +26,7 @@ const ProductCard: React.FC<Props> = ({ index, name, price, productId }) => {
         <div className="card-body">
           <h2 className="card-title">{name}</h2>
           <p>Price: {price} Baht</p>
-          <ModalAddCart index={index} productId={productId} />
+          <ModalAddCart index={index} productId={productId} image={image} />
           <div className="card-actions justify-end">
             <button
               className="btn"
