@@ -6,11 +6,11 @@ import { useUserAuth } from "@/libs/context/UserAuthContext";
 import Loading from "@/Components/Loading";
 import getUserbyID from "@/libs/user/getUserbyID";
 import ModalUpdateProfile from "@/Components/ModalUpdateProfile";
-import updateUser from "@/libs/user/updateUserbyID";
 import ModalAddAddress from "@/Components/ModalAddAddress";
 import getAddressbyID from "@/libs/user/getAddressbyID";
 import Addresses from "@/Components/Addresses";
 import { cuteAlert } from "cute-alert";
+import updateUserProfile from "@/libs/user/updateUserProfile";
 
 interface AddressData {
   user_id: string;
@@ -26,6 +26,8 @@ const Page = () => {
   const [userData, setUserData] = useState<any>({});
   const [hasImage, setHasImage] = useState<boolean>(false);
   const [addressesData, setAddressData] = useState<AddressData[]>([]);
+  const [file, setFile] = useState<File | null>(null);
+  const [filePreview, setFilePreview] = useState<string>("");
 
   const { user } = useUserAuth();
 
@@ -53,35 +55,26 @@ const Page = () => {
   }, [fetchData]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        if (reader.result) {
-          const base64Image = reader.result as string;
-          setUserData((prevData: any) => ({ ...prevData, image: base64Image }));
-          setHasImage(true);
-        }
-      };
-      reader.readAsDataURL(file);
+    if (event.target.files && event.target.files[0]) {
+      const selectedFile = event.target.files[0];
+      setFile(selectedFile);
+      setFilePreview(URL.createObjectURL(selectedFile));
     }
   };
 
-  const updateProfile = async (event: any) => {
+  const updateProfile = async (event: React.FormEvent) => {
     event.preventDefault();
-    const newData = {
-      user_id: userData.user_id,
-      uid: userData.uid,
-      role: userData.role,
-      email: userData.email,
-      tel: userData.tel,
-      first_name: userData.first_name,
-      last_name: userData.last_name,
-      image: userData.image,
-      token: userData.token,
-    };
-    await updateUser(newData);
-    fetchData();
+    if (!file) {
+      console.error("No file selected");
+      return;
+    }
+    try {
+      await updateUserProfile(userData.uid, file);
+      window.location.reload();
+      fetchData();
+    } catch (error) {
+      console.error("Failed to update profile picture:", error);
+    }
   };
 
   return (
@@ -97,9 +90,10 @@ const Page = () => {
             <div className="mb-8 flex flex-col justify-center md:ml-52 md:mr-32">
               <img
                 src={
-                  hasImage
+                  filePreview ||
+                  (hasImage
                     ? userData.image
-                    : "https://img.freepik.com/free-psd/3d-render-avatar-character_23-2150611737.jpg"
+                    : "https://img.freepik.com/free-psd/3d-render-avatar-character_23-2150611737.jpg")
                 }
                 className="w-[28rem] h-[28rem] rounded-full shadow-3xl mb-2"
                 alt="User Avatar"
@@ -161,7 +155,7 @@ const Page = () => {
                   {addressesData.length > 0 ? (
                     addressesData.map((address, index) => (
                       <Addresses
-                        key={address.user_id}
+                        key={index}
                         housename={address.housename}
                         street={address.street}
                         city={address.city}
@@ -194,7 +188,8 @@ const Page = () => {
                       cuteAlert({
                         type: "info",
                         title: "Addresses",
-                        description: "You has reach the limit of 3 addresses",
+                        description:
+                          "You have reached the limit of 3 addresses",
                         primaryButtonText: "Confirm",
                       });
                     }}

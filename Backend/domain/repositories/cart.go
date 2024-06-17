@@ -50,7 +50,7 @@ func (repo cartRepository) FindCartByUserID(userID string) (*entities.CartDataFo
 	err := repo.Collection.FindOne(repo.Context, bson.M{"user_id": userID}).Decode(&result)
 
 	if err == mongo.ErrNoDocuments {
-		return nil, fmt.Errorf("User not found")
+		return nil, fmt.Errorf("user not found")
 	}
 
 	if err != nil {

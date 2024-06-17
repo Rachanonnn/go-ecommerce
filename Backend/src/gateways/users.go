@@ -1,7 +1,9 @@
 package gateways
 
 import (
+	"fmt"
 	"go-ecommerce/domain/entities"
+	"io/ioutil"
 	"log"
 	"strconv"
 
@@ -289,6 +291,41 @@ func (h HTTPGateway) DeleteOrder(ctx *fiber.Ctx) error {
 
 	if err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "cannot delete cart data"})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "success"})
+}
+
+func (h HTTPGateway) UploadProfilePicture(ctx *fiber.Ctx) error {
+
+	params := ctx.Queries()
+
+	if len(params) <= 0 {
+		return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "user id not fill"})
+	}
+
+	userID := params["id"]
+
+	imagefile, err := ctx.FormFile("image")
+	if err != nil || imagefile == nil {
+		fmt.Println("imagefile:", imagefile)
+	}
+
+	if imagefile != nil {
+		fileContent, err := imagefile.Open()
+		if err != nil {
+			return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "Failed to open uploaded file"})
+		}
+		defer fileContent.Close()
+
+		fileBytes, err := ioutil.ReadAll(fileContent)
+		if err != nil {
+			return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "Failed to read uploaded file"})
+		}
+
+		if err = h.UserService.UpdateProfilePicture(userID, fileBytes); err != nil {
+			return ctx.Status(fiber.StatusBadRequest).JSON(entities.ResponseModel{Message: "Failed to update profile picture"})
+		}
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "success"})

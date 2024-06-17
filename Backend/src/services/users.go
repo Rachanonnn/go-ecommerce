@@ -5,6 +5,7 @@ import (
 	"go-ecommerce/domain/entities"
 	"go-ecommerce/domain/repositories"
 	"go-ecommerce/src/middlewares"
+	"go-ecommerce/src/utils"
 
 	"github.com/google/uuid"
 )
@@ -21,6 +22,7 @@ type IUsersService interface {
 	GetUserByID(userID string) (*entities.UserDataFormat, error)
 	UpdateUser(userID string, data *entities.UserDataFormat) error
 	DeleteUser(userID string) error
+	UpdateProfilePicture(userID string, file []byte) error
 }
 
 func NewUsersService(repo0 repositories.IUsersRepository, repo1 repositories.IAddressRepository, repo2 repositories.ICartRepository) IUsersService {
@@ -102,6 +104,31 @@ func (sv usersService) DeleteUser(userID string) error {
 	err = sv.UsersRepository.DeleteUser(userID)
 
 	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (sv usersService) UpdateProfilePicture(uid string, file []byte) error {
+
+	data, err := sv.UsersRepository.FindByUID(uid)
+
+	if err != nil {
+		return fmt.Errorf("can't find user")
+	}
+
+	keyName, contentType := utils.CreateKeyNameImage(data, "webp", "")
+
+	imageURL, err := utils.UploadS3FromString(file, keyName, contentType)
+
+	if err != nil {
+		return fmt.Errorf("error uploading image")
+	}
+
+	data.Image = imageURL
+
+	if err := sv.UsersRepository.UpdateUserbyUID(uid, data); err != nil {
 		return err
 	}
 
