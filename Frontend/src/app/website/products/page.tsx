@@ -56,7 +56,7 @@ const Page = () => {
             src="/homepage/productpage.jpg"
             alt="A stylish background featuring sneakers"
             layout="fill"
-            className="brightness-[0.6] object-cover"
+            className="brightness-[0.5] object-cover"
           />
         </div>
         <div className="absolute text-white w-[50%] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
