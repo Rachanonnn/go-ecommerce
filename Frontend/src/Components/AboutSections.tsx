@@ -11,9 +11,7 @@ const TAB_DATA = [
     content: (
       <div className="flex flex-row justify-start">
         <div className="mr-auto">
-          <h2 className="text-lg font-semibold mb-3 justify-start font-bold">
-            Lorem
-          </h2>
+          <h2 className="text-lg mb-3 justify-start font-bold">Lorem</h2>
           <p className="text-sm">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras nulla
             mi, feugiat nec pulvinar non, pulvinar a sem.

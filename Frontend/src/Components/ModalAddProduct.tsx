@@ -78,8 +78,8 @@ const ModalAddProduct: React.FC<ModalAddProductProps> = ({
       const index = latestProduct.toString();
 
       await updateProductImage(index, file);
-      onProductAdded();
       handlerClear();
+      onProductAdded();
       (document.getElementById("modalAddProduct") as HTMLDialogElement).close();
     } catch (error) {
       console.error("Error adding product:", error);
@@ -101,7 +101,7 @@ const ModalAddProduct: React.FC<ModalAddProductProps> = ({
           <img
             src={
               filePreview ||
-              "https://images3.alphacoders.com/133/thumbbig-1331510.webp"
+              "https://images.surferseo.art/2936ab41-6f6f-47eb-b605-815590aac413.png"
             }
             className="shadow-3xl mb-2 rounded-2xl"
             alt="Product Preview"

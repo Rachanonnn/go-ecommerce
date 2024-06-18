@@ -51,7 +51,7 @@ const Page = () => {
   return (
     <div>
       <div className="relative min-h-[43vh]">
-        <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute inset-0 overflow-hidden mb-3">
           <Image
             src="/homepage/productpage.jpg"
             alt="A stylish background featuring sneakers"
@@ -113,6 +113,7 @@ const Page = () => {
                     key={index}
                     name={product.product_name}
                     price={product.price}
+                    quantity={product.quantity}
                     productId={product.product_id}
                     index={index}
                     image={product.image}

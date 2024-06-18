@@ -72,6 +72,7 @@ const Page: React.FC = () => {
             {/* head */}
             <thead>
               <tr>
+                <th></th>
                 <th>Item No.</th>
                 <th>Name</th>
                 <th>Price</th>

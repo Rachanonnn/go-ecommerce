@@ -19,6 +19,11 @@ const OrderRow: React.FC<Props> = ({
     <>
       {/* row */}
       <tr>
+        <th className="w-1">
+          <label>
+            <input type="checkbox" className="checkbox" />
+          </label>
+        </th>
         <th>{index + 1}</th>
         <td>{name}</td>
         <td>{price}</td>
