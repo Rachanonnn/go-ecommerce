@@ -113,6 +113,7 @@ const Page = () => {
                     key={product.product_id}
                     name={product.product_name}
                     price={product.price}
+                    quantity={product.quantity}
                     productId={product.product_id}
                     index={index}
                     image={product.image}

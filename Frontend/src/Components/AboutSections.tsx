@@ -6,55 +6,33 @@ import { motion, useInView } from "framer-motion";
 
 const TAB_DATA = [
   {
-    title: "Lorem",
-    id: "lorem",
+    title: "2019",
+    id: "2019",
     content: (
       <div className="flex flex-row justify-start">
         <div className="mr-auto">
-          <h2 className="text-lg font-semibold mb-3 justify-start">Lorem</h2>
-          <ul className="list-disc pl-2">
-            <li>Lorem</li>
-            <li>Lorem</li>
-            <li>Lorem</li>
-            <li>Lorem</li>
-            <li>Lorem</li>
-          </ul>
-        </div>
-        <div className="mx-auto">
-          <h2 className="text-lg font-semibold mb-3 justify-start">Lorem</h2>
-          <ul className="list-disc pl-2">
-            <li>Lorem</li>
-            <li>Lorem</li>
-            <li>Lorem</li>
-            <li>Lorem</li>
-            <li>Lorem</li>
-          </ul>
-        </div>
-        <div className="mx-auto">
-          <h2 className="text-lg font-semibold mb-3 justify-start">Lorem</h2>
-          <ul className="list-disc pl-2">
-            <li>Lorem</li>
-            <li>Lorem</li>
-            <li>Lorem</li>
-            <li>Lorem</li>
-          </ul>
+          <h2 className="text-lg mb-3 justify-start font-bold">Lorem</h2>
+          <p className="text-sm">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras nulla
+            mi, feugiat nec pulvinar non, pulvinar a sem.
+          </p>
         </div>
       </div>
     ),
   },
   {
-    title: "Lorems",
-    id: "lorems",
+    title: "2020",
+    id: "2020",
     content: (
       <ul className="list-disc pl-2">
-        <li className="mb-1">Lorems</li>
-        <p className="mb-4">
+        <li className="mb-1 text-md font-bold">Lorems</li>
+        <p className="mb-4 text-sm">
           {" "}
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras nulla
           mi, feugiat nec pulvinar non, pulvinar a sem.
         </p>
-        <li className="mb-1">Lorems</li>
-        <p>
+        <li className="mb-1 text-md font-bold">Lorems</li>
+        <p className="text-sm">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras nulla
           mi, feugiat nec pulvinar non, pulvinar a sem.
         </p>
@@ -62,8 +40,8 @@ const TAB_DATA = [
     ),
   },
   {
-    title: "Loremss",
-    id: "loremss",
+    title: "2021",
+    id: "2021",
     content: (
       <ul className="list-disc pl-2">
         <li>
@@ -76,7 +54,7 @@ const TAB_DATA = [
 ];
 
 const AboutSection = () => {
-  const [tab, setTab] = useState("lorem");
+  const [tab, setTab] = useState("2021");
   const [_, startTransition] = useTransition();
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
