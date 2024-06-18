@@ -75,23 +75,42 @@ const Page = () => {
         </div>
       </div>
       <div className="min-h-screen">
-        <h1 className="text-2xl md:text-3xl font-bold justify-center text-center mx-auto mt-6">
+        <ModalAddProduct onProductAdded={fetchProducts} />
+        <h1 className="text-2xl md:text-3xl font-bold justify-center text-center mx-auto mt-8 mb-4">
           Products
         </h1>
-        <ModalAddProduct onProductAdded={fetchProducts} />
-        <div className="flex justify-end mr-6">
-          <button
-            className="btn"
-            onClick={() => {
-              if (document) {
-                (
-                  document.getElementById("modalAddProduct") as HTMLFormElement
-                ).showModal();
-              }
-            }}
-          >
-            Add Product
-          </button>
+        <div>
+          <div className="flex flex-wrap w-[90%] justify-end gap-2">
+            <div className="join">
+              <div>
+                <div>
+                  <input
+                    className="input input-bordered join-item"
+                    placeholder="Search"
+                  />
+                </div>
+              </div>
+              <div className="indicator">
+                <button className="btn join-item">Search</button>
+              </div>
+            </div>
+            <div className="relative">
+              <button
+                className="btn"
+                onClick={() => {
+                  if (document) {
+                    (
+                      document.getElementById(
+                        "modalAddProduct"
+                      ) as HTMLFormElement
+                    ).showModal();
+                  }
+                }}
+              >
+                Add Product
+              </button>
+            </div>
+          </div>
         </div>
         <div
           ref={ref}
