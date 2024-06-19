@@ -8,11 +8,15 @@ import React from "react";
 interface ModalAddCartProps {
   productId: string;
   index: number;
+  image: string;
 }
 
-const ModalAddCart: React.FC<ModalAddCartProps> = ({ productId, index }) => {
+const ModalAddCart: React.FC<ModalAddCartProps> = ({
+  productId,
+  index,
+  image,
+}) => {
   // console.log("Product ID in ModalAddCart:", productId);
-
   const [formData, setFormData] = React.useState({
     product_id: productId,
     quantity: 0,
@@ -74,6 +78,7 @@ const ModalAddCart: React.FC<ModalAddCartProps> = ({ productId, index }) => {
           </form>
           <h3 className="font-bold text-lg">Add To Cart</h3>
           <form onSubmit={onSubmit} className="flex flex-col gap-4 mt-4">
+            <img className="rounded-xl" src={image} />
             <label className="input input-bordered flex items-center gap-2">
               <p className="p-2">
                 <IconStack stroke={1.4} size={32} />

@@ -14,6 +14,7 @@ interface Product {
   product_name: string;
   quantity: number;
   price: number;
+  image: string;
 }
 
 const Page = () => {
@@ -112,8 +113,10 @@ const Page = () => {
                     key={product.product_id}
                     name={product.product_name}
                     price={product.price}
+                    quantity={product.quantity}
                     productId={product.product_id}
                     index={index}
+                    image={product.image}
                   />
                 </motion.div>
               ))}

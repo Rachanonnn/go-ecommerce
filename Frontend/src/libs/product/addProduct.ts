@@ -15,6 +15,9 @@ export default async function addProduct({
     price,
   };
 
+  // Log the payload to ensure it's correct
+  console.log("Sending data:", JSON.stringify(data));
+
   try {
     const response = await fetch(
       `${process.env.BACKEND_URL}/api/v1/product/add_product`,
@@ -35,7 +38,7 @@ export default async function addProduct({
       try {
         errorDetails = JSON.parse(responseText);
       } catch (e) {
-        throw new Error(`Failed to fetch product: ${response.statusText}`);
+        throw new Error(`Failed to fetch product: ${responseText}`);
       }
       throw new Error(
         `Failed to fetch product: ${
