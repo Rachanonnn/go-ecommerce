@@ -43,8 +43,9 @@ func main() {
 	sv2 := sv.NewAddressService(addressMongo, userMongo)
 	sv3 := sv.NewCartService(cartMongo, userMongo, productMongo)
 	sv4 := sv.NewGoogleService()
+	sv5 := sv.NewStripeService(userMongo)
 
-	gw.NewHTTPGateway(app, sv0, sv1, sv2, sv3, sv4)
+	gw.NewHTTPGateway(app, sv0, sv1, sv2, sv3, sv4, sv5)
 
 	PORT := os.Getenv("DB_PORT_LOGIN")
 

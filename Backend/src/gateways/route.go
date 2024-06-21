@@ -45,3 +45,10 @@ func GatewayGoogle(gateway HTTPGateway, app *fiber.App) {
 	apiGoogle.Get("/google", gateway.GoogleAuthentication)
 	apiGoogle.Get("/google_callback", gateway.GoogleCallback)
 }
+
+func GatewayStripe(gateway HTTPGateway, app *fiber.App) {
+
+	api := app.Group("/api/stripe")
+
+	api.Get("/create_payment", gateway.CreatePayment)
+}
