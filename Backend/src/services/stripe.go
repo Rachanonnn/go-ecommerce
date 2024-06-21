@@ -26,6 +26,9 @@ func NewStripeService(repo0 repositories.IUsersRepository) IStripeService {
 
 func (h stripeService) CreatePayment(price string, cartID string, methodPay string) (entities.ResponseModel, error) {
 	stripe.Key = os.Getenv("STRIPE_KEY")
+	if os.Getenv("STRIPE_KEY") == "" {
+		stripe.Key = "sk..............."
+	}
 	priceData, err := strconv.ParseFloat(price, 64)
 	if err != nil {
 		return entities.ResponseModel{Message: "invalid price"}, err
