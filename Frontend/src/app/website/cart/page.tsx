@@ -6,6 +6,7 @@ import getitemfromcart from "@/libs/user/getitemfromcart";
 import Loading from "@/Components/Loading";
 import getProductbyID from "@/libs/product/getProductbyID";
 import { useUserAuth } from "@/libs/context/UserAuthContext";
+import getCreatePayment from "@/libs/stripe/createPayment";
 
 interface CartItem {
   product_id: string;
@@ -25,21 +26,35 @@ const Page: React.FC = () => {
   const [orderData, setOrderData] = React.useState<Order[]>([]);
   const [loading, setLoading] = React.useState<boolean>(true);
   const [totalCartPrice, setTotalCartPrice] = React.useState<number>(0);
+  const [quantitys, setQuantitys] = React.useState<number>(0);
+  const [userID, setUserID] = React.useState<string>("");
+
+  const createPayment = async () => {
+    try {
+      const response = await getCreatePayment(totalCartPrice, userID, 1);
+      window.location.href = response.data;
+    } catch (error) {
+      console.error("Error creating payment:", error);
+    }
+  };
 
   const fetchOrder = React.useCallback(async () => {
     if (!user) return;
+    setUserID(user.uid);
     setLoading(true);
 
     try {
       const response = await getitemfromcart(user.uid);
       const cart_data = response.data.cart_data;
       let totalCartPrice = 0;
+      let quantitys = 0;
 
       const orders = await Promise.all(
         cart_data.map(async (item: CartItem) => {
           const product = await getProductbyID(item.product_id);
           //   console.log(item.total_price);
           totalCartPrice += item.total_price;
+          quantitys += item.quantity;
           return {
             name: product.data.product_name,
             price: product.data.price,
@@ -51,6 +66,7 @@ const Page: React.FC = () => {
 
       setOrderData(orders);
       setTotalCartPrice(totalCartPrice);
+      setQuantitys(quantitys);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching order data:", error);
@@ -105,7 +121,7 @@ const Page: React.FC = () => {
             <p className="text-sm md:text-lg font-bold mb-2">
               Total price: ${totalCartPrice.toFixed(2)}
             </p>
-            <button className="btn md:btn-xl">Check out</button>
+            <button className="btn md:btn-xl" onClick={() => createPayment()}>Check out</button>
           </div>
         </div>
       </div>

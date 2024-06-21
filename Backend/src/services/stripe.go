@@ -15,7 +15,7 @@ type stripeService struct {
 }
 
 type IStripeService interface {
-	CreatePayment(price string, cartID string, methodPay string) (entities.ResponseModel, error)
+	CreatePayment(price string, cartID string, methodPay string, quantity string) (entities.ResponseModel, error)
 }
 
 func NewStripeService(repo0 repositories.IUsersRepository) IStripeService {
@@ -24,7 +24,7 @@ func NewStripeService(repo0 repositories.IUsersRepository) IStripeService {
 	}
 }
 
-func (h stripeService) CreatePayment(price string, cartID string, methodPay string) (entities.ResponseModel, error) {
+func (h stripeService) CreatePayment(price string, cartID string, methodPay string, quantity string) (entities.ResponseModel, error) {
 	stripe.Key = os.Getenv("STRIPE_KEY")
 	if os.Getenv("STRIPE_KEY") == "" {
 		stripe.Key = "sk..............."
@@ -32,6 +32,10 @@ func (h stripeService) CreatePayment(price string, cartID string, methodPay stri
 	priceData, err := strconv.ParseFloat(price, 64)
 	if err != nil {
 		return entities.ResponseModel{Message: "invalid price"}, err
+	}
+	quantityData, err := strconv.Atoi(quantity)
+	if err != nil {
+		return entities.ResponseModel{Message: "invalid quantity"}, err
 	}
 	if methodPay == "" {
 		methodPay = "promptpay"
@@ -47,7 +51,7 @@ func (h stripeService) CreatePayment(price string, cartID string, methodPay stri
 					},
 					UnitAmount: stripe.Int64(int64(priceData) * 100),
 				},
-				Quantity: stripe.Int64(1),
+				Quantity: stripe.Int64(int64(quantityData)),
 			},
 		},
 		Mode:                stripe.String("payment"),
