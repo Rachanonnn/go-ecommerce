@@ -51,4 +51,5 @@ func GatewayStripe(gateway HTTPGateway, app *fiber.App) {
 	api := app.Group("/api/stripe")
 
 	api.Get("/create_payment", gateway.CreatePayment)
+	api.Post("/webhook_stripe", gateway.Webhook)
 }
