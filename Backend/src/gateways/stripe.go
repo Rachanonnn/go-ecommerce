@@ -1,12 +1,15 @@
 package gateways
 
 import (
+	"bytes"
+	"fmt"
 	"go-ecommerce/domain/entities"
+	"io"
+	"io/ioutil"
 	"os"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/stripe/stripe-go/v78"
-	"github.com/stripe/stripe-go/v78/webhookendpoint"
+	"github.com/stripe/stripe-go/v78/webhook"
 )
 
 func (h *HTTPGateway) CreatePayment(ctx *fiber.Ctx) error {
@@ -24,23 +27,34 @@ func (h *HTTPGateway) CreatePayment(ctx *fiber.Ctx) error {
 }
 
 func (h *HTTPGateway) Webhook(ctx *fiber.Ctx) error {
-	stripe.Key = os.Getenv("STRIPE_KEY")
-	if os.Getenv("STRIPE_KEY") == "" {
-		stripe.Key = "sk..............."
+	const MaxBodyBytes = int64(65536)
+	body := ctx.Body()
+	reader := io.LimitReader(bytes.NewReader(body), MaxBodyBytes)
+	payload, err := ioutil.ReadAll(reader)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error reading request body: %v\n", err)
+		return ctx.SendStatus(fiber.StatusServiceUnavailable)
 	}
 
-	params := &stripe.WebhookEndpointParams{
-		EnabledEvents: []*string{
-			stripe.String("charge.succeeded"),
-			stripe.String("charge.failed"),
-		},
-		URL: stripe.String("https://example.com/my/webhook/endpoint"),
+	endpointSecret := os.Getenv("STRIPE_WEBHOOK_SECRET")
+	if endpointSecret == "" {
+		fmt.Fprintf(os.Stderr, "Missing STRIPE_WEBHOOK_SECRET env var\n")
+		return ctx.SendStatus(fiber.StatusServiceUnavailable)
 	}
-	result, err := webhookendpoint.New(params)
+	event, err := webhook.ConstructEvent(payload, ctx.Get("Stripe-Signature"), endpointSecret)
 
 	if err != nil {
-		return ctx.Status(fiber.StatusForbidden).JSON(entities.ResponseModel{Message: err.Error()})
+		fmt.Fprintf(os.Stderr, "Error verifying webhook signature: %v\n", err)
+		return ctx.SendStatus(fiber.StatusBadRequest)
 	}
 
-	return ctx.Status(fiber.StatusOK).JSON(result)
+	switch event.Type {
+	case "checkout.session.completed":
+		paymentData := event.Data.Object
+		fmt.Println(paymentData)
+	default:
+		fmt.Fprintf(os.Stderr, "Unhandled event type: %s\n", event.Type)
+	}
+
+	return ctx.SendStatus(fiber.StatusOK)
 }
