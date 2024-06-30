@@ -37,13 +37,14 @@ func main() {
 	productMongo := repo.NewProductRepository(mongodb)
 	addressMongo := repo.NewAddressRepository(mongodb)
 	cartMongo := repo.NewCartRepository(mongodb)
+	historyCartRepo := repo.NewHistoryCartRepository(mongodb)
 
 	sv0 := sv.NewUsersService(userMongo, addressMongo, cartMongo)
 	sv1 := sv.NewProductService(productMongo)
 	sv2 := sv.NewAddressService(addressMongo, userMongo)
 	sv3 := sv.NewCartService(cartMongo, userMongo, productMongo)
 	sv4 := sv.NewGoogleService()
-	sv5 := sv.NewStripeService(userMongo)
+	sv5 := sv.NewStripeService(userMongo, historyCartRepo)
 
 	gw.NewHTTPGateway(app, sv0, sv1, sv2, sv3, sv4, sv5)
 

@@ -10,6 +10,7 @@ require (
 	github.com/gofiber/fiber/v2 v2.51.0
 	github.com/golang-jwt/jwt/v5 v5.2.0
 	github.com/stripe/stripe-go/v78 v78.12.0
+	github.com/stripe/stripe-go/v79 v79.1.0
 	go.elastic.co/apm/module/apmmongo v1.15.0
 	go.mongodb.org/mongo-driver v1.15.0
 	golang.org/x/oauth2 v0.20.0

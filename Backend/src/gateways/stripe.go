@@ -1,15 +1,13 @@
 package gateways
 
 import (
-	"bytes"
+	"encoding/json"
 	"fmt"
 	"go-ecommerce/domain/entities"
-	"io"
-	"io/ioutil"
-	"os"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/stripe/stripe-go/v78/webhook"
+	"github.com/stripe/stripe-go/v79"
 )
 
 func (h *HTTPGateway) CreatePayment(ctx *fiber.Ctx) error {
@@ -27,43 +25,67 @@ func (h *HTTPGateway) CreatePayment(ctx *fiber.Ctx) error {
 }
 
 func (h *HTTPGateway) Webhook(ctx *fiber.Ctx) error {
-	const MaxBodyBytes = int64(65536)
-	body := ctx.Body()
-	reader := io.LimitReader(bytes.NewReader(body), MaxBodyBytes)
-	payload, err := ioutil.ReadAll(reader)
+	// const MaxBodyBytes = int64(65536)
+	// body := ctx.Body()
+	// reader := io.LimitReader(bytes.NewReader(body), MaxBodyBytes)
+	// payload, err := ioutil.ReadAll(reader)
+	// if err != nil {
+	// 	fmt.Fprintf(os.Stderr, "Error reading request body: %v\n", err)
+	// 	return ctx.SendStatus(fiber.StatusServiceUnavailable)
+	// }
+
+	// endpointSecret := os.Getenv("STRIPE_WEBHOOK_SECRET")
+	// if endpointSecret == "" {
+	// 	fmt.Fprintf(os.Stderr, "Missing STRIPE_WEBHOOK_SECRET env var\n")
+	// 	return ctx.SendStatus(fiber.StatusServiceUnavailable)
+	// }
+
+	// sigHeader := ctx.Get("Stripe-Signature")
+	// if sigHeader == "" {
+	// 	fmt.Fprintf(os.Stderr, "Missing Stripe-Signature header\n")
+	// 	return ctx.SendStatus(fiber.StatusBadRequest)
+	// }
+
+	// event, err := webhook.ConstructEventWithOptions(payload, sigHeader, endpointSecret, webhook.ConstructEventOptions{
+	// 	IgnoreAPIVersionMismatch: true,
+	// })
+	// if err != nil {
+	// 	fmt.Fprintf(os.Stderr, "Error verifying webhook signature: %v\n", err)
+	// 	return ctx.SendStatus(fiber.StatusBadRequest)
+	// }
+	type MetadataCart struct {
+		CartID   string `json:"cart_id"`
+		Price    string `json:"price"`
+		Quantity string `json:"quantity"`
+	}
+	payload := ctx.Body()
+	event := stripe.Event{}
+	err := json.Unmarshal(payload, &event)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error reading request body: %v\n", err)
-		return ctx.SendStatus(fiber.StatusServiceUnavailable)
+		return ctx.Status(fiber.StatusUnauthorized).JSON(entities.ResponseModel{Message: "invalid webhook"})
 	}
+	dataCart := event.Data.Object["metadata"].(map[string]interface{})
 
-	endpointSecret := os.Getenv("STRIPE_WEBHOOK_SECRET")
-	if endpointSecret == "" {
-		fmt.Fprintf(os.Stderr, "Missing STRIPE_WEBHOOK_SECRET env var\n")
-		return ctx.SendStatus(fiber.StatusServiceUnavailable)
+	metaDataCart := MetadataCart{
+		CartID:   fmt.Sprintf("%v", dataCart["cart_id"]),
+		Price:    fmt.Sprintf("%v", dataCart["price"]),
+		Quantity: fmt.Sprintf("%v", dataCart["quantity"]),
 	}
-
-	sigHeader := ctx.Get("Stripe-Signature")
-	if sigHeader == "" {
-		fmt.Fprintf(os.Stderr, "Missing Stripe-Signature header\n")
-		return ctx.SendStatus(fiber.StatusBadRequest)
-	}
-
-	event, err := webhook.ConstructEventWithOptions(payload, sigHeader, endpointSecret, webhook.ConstructEventOptions{
-		IgnoreAPIVersionMismatch: true,
-	})
+	price, err := strconv.Atoi(metaDataCart.Price)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error verifying webhook signature: %v\n", err)
-		return ctx.SendStatus(fiber.StatusBadRequest)
+		return ctx.Status(fiber.StatusUnauthorized).JSON(entities.ResponseModel{Message: "invalid webhook"})
 	}
-
-	switch event.Type {
-	case "checkout.session.completed":
-		paymentData := event.Data.Object
-		fmt.Println(paymentData)
-		fmt.Println("Payment successful")
-	default:
-		fmt.Fprintf(os.Stderr, "Unhandled event type: %s\n", event.Type)
+	quantity, err := strconv.Atoi(metaDataCart.Quantity)
+	if err != nil {
+		return ctx.Status(fiber.StatusUnauthorized).JSON(entities.ResponseModel{Message: "invalid webhook"})
 	}
-
-	return ctx.SendStatus(fiber.StatusOK)
+	historyCartData := entities.HistoryCartData{
+		CartID:   metaDataCart.CartID,
+		Quantity: quantity,
+		Price:    price,
+	}
+	if err := h.StripeSV.InsertHistoryCart(&historyCartData); err != nil {
+		return ctx.Status(fiber.StatusUnauthorized).JSON(entities.ResponseModel{Message: "can't insert history cart"})
+	}
+	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "success"})
 }

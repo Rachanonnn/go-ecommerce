@@ -11,16 +11,19 @@ import (
 )
 
 type stripeService struct {
-	UsersRepository repositories.IUsersRepository
+	UsersRepository       repositories.IUsersRepository
+	HistoryCartRepository repositories.IHistoryCartRepository
 }
 
 type IStripeService interface {
 	CreatePayment(price string, cartID string, methodPay string, quantity string) (entities.ResponseModel, error)
+	InsertHistoryCart(data *entities.HistoryCartData) error
 }
 
-func NewStripeService(repo0 repositories.IUsersRepository) IStripeService {
+func NewStripeService(repo0 repositories.IUsersRepository, repo1 repositories.IHistoryCartRepository) IStripeService {
 	return &stripeService{
-		UsersRepository: repo0,
+		UsersRepository:       repo0,
+		HistoryCartRepository: repo1,
 	}
 }
 
@@ -54,7 +57,9 @@ func (h stripeService) CreatePayment(price string, cartID string, methodPay stri
 				Quantity: stripe.Int64(int64(quantityData)),
 			},
 		},
-		Mode:                stripe.String("payment"),
+		ClientReferenceID:   stripe.String(cartID),
+		Metadata:            map[string]string{"cart_id": cartID, "price": price, "quantity": quantity},
+		Mode:                stripe.String(string(stripe.CheckoutSessionModePayment)),
 		SuccessURL:          stripe.String("http://localhost:3000/website/success"),
 		CancelURL:           stripe.String("http://localhost:3000/website/cancel"),
 		AllowPromotionCodes: stripe.Bool(true),
@@ -66,4 +71,8 @@ func (h stripeService) CreatePayment(price string, cartID string, methodPay stri
 		return entities.ResponseModel{Message: "can't create session"}, err
 	}
 	return entities.ResponseModel{Message: "success", Data: session.URL}, nil
+}
+
+func (h stripeService) InsertHistoryCart(data *entities.HistoryCartData) error {
+	return h.HistoryCartRepository.InsertNewHistoryCart(data)
 }
