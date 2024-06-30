@@ -41,8 +41,8 @@ func (h *HTTPGateway) Webhook(ctx *fiber.Ctx) error {
 		fmt.Fprintf(os.Stderr, "Missing STRIPE_WEBHOOK_SECRET env var\n")
 		return ctx.SendStatus(fiber.StatusServiceUnavailable)
 	}
-	event, err := webhook.ConstructEvent(payload, ctx.Get("Stripe-Signature"), endpointSecret)
 
+	event, err := webhook.ConstructEvent(payload, ctx.Get("Stripe-Signature"), endpointSecret)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error verifying webhook signature: %v\n", err)
 		return ctx.SendStatus(fiber.StatusBadRequest)
@@ -52,6 +52,7 @@ func (h *HTTPGateway) Webhook(ctx *fiber.Ctx) error {
 	case "checkout.session.completed":
 		paymentData := event.Data.Object
 		fmt.Println(paymentData)
+		fmt.Println("Payment successful")
 	default:
 		fmt.Fprintf(os.Stderr, "Unhandled event type: %s\n", event.Type)
 	}
