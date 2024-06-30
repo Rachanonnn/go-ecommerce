@@ -42,7 +42,15 @@ func (h *HTTPGateway) Webhook(ctx *fiber.Ctx) error {
 		return ctx.SendStatus(fiber.StatusServiceUnavailable)
 	}
 
-	event, err := webhook.ConstructEvent(payload, ctx.Get("Stripe-Signature"), endpointSecret)
+	sigHeader := ctx.Get("Stripe-Signature")
+	if sigHeader == "" {
+		fmt.Fprintf(os.Stderr, "Missing Stripe-Signature header\n")
+		return ctx.SendStatus(fiber.StatusBadRequest)
+	}
+
+	event, err := webhook.ConstructEventWithOptions(payload, sigHeader, endpointSecret, webhook.ConstructEventOptions{
+		IgnoreAPIVersionMismatch: true,
+	})
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error verifying webhook signature: %v\n", err)
 		return ctx.SendStatus(fiber.StatusBadRequest)
