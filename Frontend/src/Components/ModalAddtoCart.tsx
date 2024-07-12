@@ -78,7 +78,7 @@ const ModalAddCart: React.FC<ModalAddCartProps> = ({
           </form>
           <h3 className="font-bold text-lg">Add To Cart</h3>
           <form onSubmit={onSubmit} className="flex flex-col gap-4 mt-4">
-            <img className="rounded-xl" src={image} />
+            <img className="rounded-xl" src={image} alt="" />
             <label className="input input-bordered flex items-center gap-2">
               <p className="p-2">
                 <IconStack stroke={1.4} size={32} />

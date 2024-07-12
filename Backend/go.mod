@@ -4,10 +4,12 @@ go 1.22.1
 
 require (
 	github.com/JohnFarmers/go-unit-tester v1.0.0
+	github.com/aws/aws-sdk-go v1.54.2
 	github.com/goccy/go-json v0.10.2
 	github.com/gofiber/contrib/jwt v1.0.8
 	github.com/gofiber/fiber/v2 v2.51.0
 	github.com/golang-jwt/jwt/v5 v5.2.0
+	github.com/stripe/stripe-go/v78 v78.12.0
 	go.elastic.co/apm/module/apmmongo v1.15.0
 	go.mongodb.org/mongo-driver v1.15.0
 	golang.org/x/oauth2 v0.20.0
@@ -15,7 +17,6 @@ require (
 
 require (
 	cloud.google.com/go/compute/metadata v0.3.0 // indirect
-	github.com/aws/aws-sdk-go v1.54.2 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 )
 
