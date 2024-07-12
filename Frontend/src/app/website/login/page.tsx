@@ -21,7 +21,7 @@ const Page = () => {
             Don&apos;t have an account?{" "}
             <span
               className="underline text-emerald-400 cursor-pointer hover:text-emerald-500 duration-300"
-              onClick={() => router.push("/website/register")}
+              onClick={() => router.push(`/website/register`)}
             >
               Sign up
             </span>

@@ -26,7 +26,7 @@ export const SignInWithGoogle = () => {
     newAuth
       .signInWithPopup(provider)
       .then(() => {
-        router.push("/website/home");
+        router.push(`/website/home`);
         setTimeout(() => {
           window.location.reload();
         }, 1000);

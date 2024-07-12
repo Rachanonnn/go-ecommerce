@@ -2,8 +2,9 @@ import withVideos from 'next-videos';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-//   basePath: "/go-ecommerce/Frontend",
-  output: "export",  // Enables static exports
+    basePath: "/go-ecommerce",
+    assetPrefix: "/go-ecommerce",
+//   output: "export",  // Enables static exports
   reactStrictMode: true,
   env: {
     BACKEND_URL: process.env.BACKEND_URL,
@@ -14,7 +15,7 @@ const nextConfig = {
     FIREBASE_STORAGE_BUCKET: process.env.FIREBASE_STORAGE_BUCKET,
     FIREBASE_MESSAGING_SENDER_ID: process.env.FIREBASE_MESSAGING_SENDER_ID,
     FIREBASE_APP_ID: process.env.FIREBASE_APP_ID,
-    FIREBASE_MEASUREMENT_ID: process.env.FIREBASE_MEASUREMENT_ID
+    FIREBASE_MEASUREMENT_ID: process.env.FIREBASE_MEASUREMENT_ID,
   },
 };
 

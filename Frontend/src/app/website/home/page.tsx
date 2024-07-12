@@ -47,7 +47,7 @@ const Page = () => {
       <div className="relative min-h-[90vh]">
         <div className="absolute inset-0 overflow-hidden">
           <Image
-            src="/homepage/homepage.jpg"
+            src={`/homepage/homepage.jpg`}
             alt="wallpaper"
             layout="fill"
             className="brightness-[0.6] object-cover"
@@ -72,7 +72,7 @@ const Page = () => {
             <div className="flex flex-col md:flex-row gap-4">
               <button
                 className="text-white font-bold px-10 py-3 border-2 border-white rounded-full hover:bg-fuchsia-100 hover:text-black duration-300"
-                onClick={() => router.push("/website/products")}
+                onClick={() => router.push(`/website/products`)}
               >
                 DISCOVER
               </button>
