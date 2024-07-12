@@ -9,10 +9,6 @@ permissions:
   pages: write
   id-token: write
 
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
-
 jobs:
   build_site:
     runs-on: ubuntu-latest
@@ -29,42 +25,51 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: "16"
+          node-version: "latest"
+
+      - name: Cache dependencies
+        id: cache_dependencies
+        uses: actions/cache@v3
+        with:
+          path: ./Frontend/node_modules
+          key: node-modules-${{ hashFiles('package-lock.json') }}
 
       - name: Install dependencies
-        run: npm install
+        shell: bash
+        if: steps.cache_dependencies.outputs.cache-hit != 'true'
+        run: cd Frontend && npm ci
 
-      - name: Build
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+        with:
+          static_site_generator: next
+
+      - name: Build with Next.js
         env:
           BASE_PATH: "/${{ github.event.repository.name }}"
         run: |
-          echo "BASE_PATH='/${{ github.event.repository.name }}'" > .env
-          npm run build
-          npm run export
+          echo "BASE_PATH='/${{ github.event.repository.name }}'" > Frontend/.env
+          cd Frontend && npm run build
 
       - name: Upload Artifacts
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v3
         with:
-          path: "out/"
+          path: "./Frontend/out"
 
   deploy:
     needs: build_site
     runs-on: ubuntu-latest
-
-    permissions:
-      pages: write
-      id-token: write
 
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-      - name: Deploy
+      - name: Publish to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4
