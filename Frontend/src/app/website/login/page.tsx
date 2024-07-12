@@ -5,7 +5,7 @@ import { SignInWithGoogle } from "@/Components/SignInWithGoogle";
 import { LoginForm } from "@/Components/LoginForm";
 import { useRouter } from "next/navigation";
 
-const page = () => {
+const Page = () => {
   const router = useRouter();
 
   return (
@@ -32,4 +32,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
