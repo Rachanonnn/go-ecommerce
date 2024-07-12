@@ -1,8 +1,11 @@
 import withVideos from 'next-videos';
 
 /** @type {import('next').NextConfig} */
+
+const isProd = process.env.NODE_ENV === 'production';
+
 const nextConfig = {
-  // basePath: "/go-ecommerce",
+  basePath: isProd ? "/go-ecommerce" : '',
   // assetPrefix: "/go-ecommerce",
   output: "export",
   // reactStrictMode: true,
