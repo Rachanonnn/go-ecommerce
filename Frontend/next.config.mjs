@@ -2,11 +2,14 @@ import withVideos from 'next-videos';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    basePath: "/go-ecommerce",
-    assetPrefix: "/go-ecommerce",
-  output: "export",  // Enables static exports
-  reactStrictMode: true,
-distDir: "build",
+  // basePath: "/go-ecommerce",
+  // assetPrefix: "/go-ecommerce",
+  output: "export",
+  // reactStrictMode: true,
+  distDir: "build",
+  images: {
+    unoptimized: true,
+  },
   env: {
     BACKEND_URL: process.env.BACKEND_URL,
     FIREBASE_CONFIG: process.env.FIREBASE_CONFIG,
