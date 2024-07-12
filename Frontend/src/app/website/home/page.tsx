@@ -18,8 +18,6 @@ interface Product {
 }
 
 const Page = () => {
-  const config = require("../../../../next.config.mjs");
-  const basePath = config.basePath;
   const router = useRouter();
   const [productData, setProductData] = React.useState<Product[]>([]);
   const [loading, setLoading] = React.useState<boolean>(true);
@@ -49,7 +47,7 @@ const Page = () => {
       <div className="relative min-h-[90vh]">
         <div className="absolute inset-0 overflow-hidden">
           <Image
-            src={`${basePath}/homepage/homepage.jpg`}
+            src={`go-ecommerce/homepage/homepage.jpg`}
             alt="wallpaper"
             layout="fill"
             className="brightness-[0.6] object-cover"

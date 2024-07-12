@@ -54,8 +54,8 @@ const TAB_DATA = [
 ];
 
 const AboutSection = () => {
-  const config = require("../../../../next.config.mjs");
-  const basePath = config.basePath;
+  // const config = require("../../next.config.mjs");
+  // const basePath = config.basePath;
   const [tab, setTab] = useState("2021");
   const [_, startTransition] = useTransition();
   const ref = useRef(null);
@@ -83,7 +83,7 @@ const AboutSection = () => {
           className="mx-auto xl:ml-[1rem]"
         >
           <Image
-            src={`${basePath}/homepage/about.jpg`}
+            src={`go-ecommerce/homepage/about.jpg`}
             alt="about-image"
             className="rounded-2xl"
             width={380}
