@@ -41,7 +41,7 @@ jobs:
         run: |
           echo "BASE_PATH='/${{ github.event.repository.name }}'" > .env
           cd Frontend && npm run build
-          cd Frontend && npm run export
+          npm run export
 
       - name: Upload Artifacts
         uses: actions/upload-pages-artifact@v2
