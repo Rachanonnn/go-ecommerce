@@ -2,7 +2,6 @@ import withVideos from 'next-videos';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    important: true,
     basePath: "/go-ecommerce",
     assetPrefix: "/go-ecommerce",
   output: "export",  // Enables static exports
