@@ -169,6 +169,9 @@ const Navbar = () => {
                     </a>
                   </li>
                   <li>
+                    <a href="/website/history">History</a>
+                  </li>
+                  <li>
                     <a onClick={handleLogout}>Logout</a>
                   </li>
                 </>

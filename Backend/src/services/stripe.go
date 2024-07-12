@@ -13,17 +13,19 @@ import (
 type stripeService struct {
 	UsersRepository       repositories.IUsersRepository
 	HistoryCartRepository repositories.IHistoryCartRepository
+	CartRepository        repositories.ICartRepository
 }
 
 type IStripeService interface {
 	CreatePayment(price string, cartID string, methodPay string, quantity string) (entities.ResponseModel, error)
-	InsertHistoryCart(data *entities.HistoryCartData) error
+	InsertHistoryCart(data *entities.HistoryCartData, userID string) error
 }
 
-func NewStripeService(repo0 repositories.IUsersRepository, repo1 repositories.IHistoryCartRepository) IStripeService {
+func NewStripeService(repo0 repositories.IUsersRepository, repo1 repositories.IHistoryCartRepository, repo2 repositories.ICartRepository) IStripeService {
 	return &stripeService{
 		UsersRepository:       repo0,
 		HistoryCartRepository: repo1,
+		CartRepository:        repo2,
 	}
 }
 
@@ -73,6 +75,17 @@ func (h stripeService) CreatePayment(price string, cartID string, methodPay stri
 	return entities.ResponseModel{Message: "success", Data: session.URL}, nil
 }
 
-func (h stripeService) InsertHistoryCart(data *entities.HistoryCartData) error {
+func (h stripeService) InsertHistoryCart(data *entities.HistoryCartData, userID string) error {
+
+	// cartData, err := h.CartRepository.FindCartByUserID(userID)
+
+	// if err != nil {
+	// 	return err
+	// }
+
+	// for i := range cartData.Orders {
+
+	// }
+
 	return h.HistoryCartRepository.InsertNewHistoryCart(data)
 }

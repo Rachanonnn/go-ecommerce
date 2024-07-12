@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"go-ecommerce/domain/entities"
+	"go-ecommerce/src/middlewares"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -53,6 +54,14 @@ func (h *HTTPGateway) Webhook(ctx *fiber.Ctx) error {
 	// 	fmt.Fprintf(os.Stderr, "Error verifying webhook signature: %v\n", err)
 	// 	return ctx.SendStatus(fiber.StatusBadRequest)
 	// }
+	decodedToken, err := middlewares.DecodeJWTToken(ctx)
+
+	if err != nil {
+		return ctx.Status(fiber.StatusUnauthorized).JSON(entities.ResponseModel{Message: "cannot decode token"})
+	}
+
+	userID := decodedToken.UserID
+
 	type MetadataCart struct {
 		CartID   string `json:"cart_id"`
 		Price    string `json:"price"`
@@ -60,7 +69,7 @@ func (h *HTTPGateway) Webhook(ctx *fiber.Ctx) error {
 	}
 	payload := ctx.Body()
 	event := stripe.Event{}
-	err := json.Unmarshal(payload, &event)
+	err = json.Unmarshal(payload, &event)
 	if err != nil {
 		return ctx.Status(fiber.StatusUnauthorized).JSON(entities.ResponseModel{Message: "invalid webhook"})
 	}
@@ -84,7 +93,7 @@ func (h *HTTPGateway) Webhook(ctx *fiber.Ctx) error {
 		Quantity: quantity,
 		Price:    price,
 	}
-	if err := h.StripeSV.InsertHistoryCart(&historyCartData); err != nil {
+	if err := h.StripeSV.InsertHistoryCart(&historyCartData, userID); err != nil {
 		return ctx.Status(fiber.StatusUnauthorized).JSON(entities.ResponseModel{Message: "can't insert history cart"})
 	}
 	return ctx.Status(fiber.StatusOK).JSON(entities.ResponseModel{Message: "success"})
