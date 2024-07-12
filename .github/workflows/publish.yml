@@ -39,13 +39,13 @@ jobs:
           bun-version: latest
 
       - name: Install dependencies
-        run: bun install
+        run: cd Frontend && bun install
 
       - name: build
         env:
           BASE_PATH: "/${{ github.event.repository.name }}"
         run: |
-          bun run build
+          cd Frontend && bun run build
 
       - name: Upload Artifacts
         uses: actions/upload-pages-artifact@v2
