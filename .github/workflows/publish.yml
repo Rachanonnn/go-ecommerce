@@ -25,27 +25,33 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      - name: Install Node.js
-        uses: actions/setup-node@v4
+      # If you're using pnpm, add this step then change the commands and cache key below to use `pnpm`
+      # - name: Install pnpm
+      #   uses: pnpm/action-setup@v2
+      #   with:
+      #     version: 8
+
+      - name: Install Bun.js
+        uses: oven-sh/setup-bun@v2
         with:
-          node-version: "latest"
+          bun-version: latest
 
       - name: Install dependencies
-        run: cd Frontend && npm install
+        run: bun install
 
-      - name: Build with Next.js
+      - name: build
         env:
           BASE_PATH: "/${{ github.event.repository.name }}"
         run: |
-          echo "BASE_PATH='/${{ github.event.repository.name }}'" > .env
-          cd Frontend && npm run build
+          bun run build
 
       - name: Upload Artifacts
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v2
         with:
-          path: "./out"
+          # this should match the `pages` option in your adapter-static options
+          path: "build/"
 
   deploy:
     needs: build_site
