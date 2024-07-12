@@ -22,7 +22,7 @@ const ProductCard: React.FC<Props> = ({
     <div>
       <div className="card card-compact w-96 bg-base-100 shadow-xl hover:scale-[1.02] duration-300">
         <figure>
-          <img className="h-56 w-96 object-fill" src={image} />
+          <img className="h-56 w-96 object-fill" src={image} alt="" />
         </figure>
         <div className="card-body">
           <div className="flex flex-col">
