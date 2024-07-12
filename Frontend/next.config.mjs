@@ -6,6 +6,7 @@ const nextConfig = {
     assetPrefix: "/go-ecommerce",
 //   output: "export",  // Enables static exports
   reactStrictMode: true,
+distDir: "build",
   env: {
     BACKEND_URL: process.env.BACKEND_URL,
     FIREBASE_CONFIG: process.env.FIREBASE_CONFIG,
