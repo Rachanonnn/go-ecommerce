@@ -2,6 +2,9 @@ import withVideos from 'next-videos';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    basePath: "/go-ecommerce",
+    output: "export",  // <=== enables static exports
+    reactStrictMode: true,
     env: {
         BACKEND_URL: process.env.BACKEND_URL,
         FIREBASE_CONFIG: process.env.FIREBASE_CONFIG,
@@ -13,6 +16,6 @@ const nextConfig = {
         FIREBASE_APP_ID: process.env.FIREBASE_APP_ID,
         FIREBASE_MEASUREMENT_ID: process.env.FIREBASE_MEASUREMENT_ID
     },
-};
-
-export default withVideos(nextConfig);
+  };
+  
+module.exports = withVideos(nextConfig);
