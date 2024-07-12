@@ -18,4 +18,5 @@ const nextConfig = {
     },
   };
   
-module.exports = withVideos(nextConfig);
+// module.exports = nextConfig;
+export default withVideos(nextConfig);
