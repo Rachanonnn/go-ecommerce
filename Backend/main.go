@@ -7,22 +7,20 @@ import (
 	gw "go-ecommerce/src/gateways"
 	"go-ecommerce/src/middlewares"
 	sv "go-ecommerce/src/services"
-	"log"
 	"os"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/recover"
-	"github.com/joho/godotenv"
 )
 
 func main() {
 
 	// // // remove this before deploy ###################
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+	// err := godotenv.Load()
+	// if err != nil {
+	// 	log.Fatal("Error loading .env file")
+	// }
 	// /// ############################################
 
 	app := fiber.New(configuration.NewFiberConfiguration())
