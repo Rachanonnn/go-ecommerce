@@ -4,7 +4,7 @@ import withVideos from 'next-videos';
 const nextConfig = {
     basePath: "/go-ecommerce",
     assetPrefix: "/go-ecommerce",
-//   output: "export",  // Enables static exports
+  output: "export",  // Enables static exports
   reactStrictMode: true,
 distDir: "build",
   env: {
