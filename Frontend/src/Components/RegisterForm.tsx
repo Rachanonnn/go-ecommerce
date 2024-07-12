@@ -102,7 +102,7 @@ export const RegisterForm = () => {
           Already have an account?{" "}
           <span
             className="underline text-emerald-400 cursor-pointer hover:text-emerald-500 duration-300"
-            onClick={() => router.push("/website/login")}
+            onClick={() => router.push(`/website/login`)}
           >
             Sign in
           </span>

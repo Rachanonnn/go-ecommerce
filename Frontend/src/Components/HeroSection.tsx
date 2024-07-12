@@ -1,7 +1,11 @@
+"use client";
+
 import React from "react";
 import videoBG from "../../public/bg/videoBG.mp4";
+import { useRouter } from "next/navigation";
 
 const HeroSection = () => {
+  const router = useRouter();
   return (
     <div className="relative w-full h-screen overflow-hidden">
       <video
@@ -21,9 +25,12 @@ const HeroSection = () => {
               frontend. Explore our site to discover a curated selection of
               products and enjoy hassle-free shopping at your fingertips!
             </p>
-            <a className="btn btn-primary" href="/website/home">
+            <button
+              className="btn btn-primary"
+              onClick={() => router.push("/website/home")}
+            >
               Get Started
-            </a>
+            </button>
           </div>
         </div>
       </div>

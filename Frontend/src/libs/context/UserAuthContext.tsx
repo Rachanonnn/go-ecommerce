@@ -43,7 +43,7 @@ export const UserAuthContextProvider = ({
     const user = await getUserbyID(userData.user.uid);
     const token: string = user.data.token;
     await setToken(token);
-    router.push("/website/home");
+    router.push(`/website/home`);
     // setTimeout(() => {
     //   window.location.reload();
     // }, 1000);
@@ -64,12 +64,12 @@ export const UserAuthContextProvider = ({
       role: "user",
     };
     await addUser(newUser);
-    router.push("/website/home");
+    router.push(`/website/home`);
   };
 
   const logOut = async () => {
     deleteCookie("token");
-    router.push("/website/login");
+    router.push(`/website/login`);
     return signOut(auth);
   };
 

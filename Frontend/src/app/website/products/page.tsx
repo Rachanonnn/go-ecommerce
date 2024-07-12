@@ -53,7 +53,7 @@ const Page = () => {
       <div className="relative min-h-[43vh]">
         <div className="absolute inset-0 overflow-hidden mb-3">
           <Image
-            src="/homepage/productpage.jpg"
+            src={`/homepage/productpage.jpg`}
             alt="A stylish background featuring sneakers"
             layout="fill"
             className="brightness-[0.5] object-cover"

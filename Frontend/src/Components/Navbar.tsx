@@ -67,7 +67,7 @@ const Navbar = () => {
   const handleLogout = async () => {
     try {
       await logOut();
-      router.push("/website/login");
+      router.push(`/website/login`);
     } catch (error) {
       console.log(error);
     }
@@ -78,7 +78,7 @@ const Navbar = () => {
       <div className="navbar bg-base-100 gap-4">
         <div className="flex">
           <button
-            onClick={() => router.push("/")}
+            onClick={() => router.push(`/`)}
             className="btn btn-ghost text-xl"
           >
             E-Commerce
@@ -87,13 +87,13 @@ const Navbar = () => {
         <div className="flex flex-row justify-start mr-auto gap-4">
           <button
             className="btn btn-ghost p-2"
-            onClick={() => router.push("/website/home")}
+            onClick={() => router.push(`/website/home`)}
           >
             Home
           </button>
           <button
             className="btn btn-ghost p-2"
-            onClick={() => router.push("/website/products")}
+            onClick={() => router.push(`/website/products`)}
           >
             Products
           </button>
@@ -131,7 +131,7 @@ const Navbar = () => {
                 <span className="text-info">Total: ${totalCartPrice}</span>
                 <div className="card-actions">
                   <button
-                    onClick={() => router.push("/website/cart")}
+                    onClick={() => router.push(`/website/cart`)}
                     className="btn btn-primary btn-block"
                   >
                     View cart
@@ -164,7 +164,10 @@ const Navbar = () => {
               {isToken ? (
                 <>
                   <li>
-                    <a href="/website/profile" className="justify-between">
+                    <a
+                      onClick={() => router.push(`/website/profile`)}
+                      className="justify-between"
+                    >
                       Profile
                     </a>
                   </li>
@@ -175,10 +178,10 @@ const Navbar = () => {
               ) : (
                 <>
                   <li>
-                    <a onClick={() => router.push("/website/login")}>Sign in</a>
+                    <a onClick={() => router.push(`/website/login`)}>Sign in</a>
                   </li>
                   <li>
-                    <a onClick={() => router.push("/website/register")}>
+                    <a onClick={() => router.push(`/website/register`)}>
                       Register
                     </a>
                   </li>
