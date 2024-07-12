@@ -81,7 +81,7 @@ const AboutSection = () => {
           className="mx-auto xl:ml-[1rem]"
         >
           <Image
-            src={`/homepage/about.jpg`}
+            src={`/go-ecommerce/homepage/about.jpg`}
             alt="about-image"
             className="rounded-2xl"
             width={380}
