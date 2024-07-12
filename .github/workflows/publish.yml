@@ -32,11 +32,8 @@ jobs:
         with:
           node-version: "16"
 
-      - name: Change Path
-        run: cd Frontend
-
       - name: Install dependencies
-        run: npm install
+        run: cd Frontend && npm install
 
       - name: Build
         env:
