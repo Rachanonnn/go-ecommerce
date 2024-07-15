@@ -12,6 +12,7 @@ const config: Config = {
     "./src/app/website/**/*.{html,js}",
     "./src/**/*.{html,js}",
     "./src/website/**/*.{html,js}",
+    "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
