@@ -88,7 +88,6 @@ const Page: React.FC = () => {
             {/* head */}
             <thead>
               <tr>
-                <th></th>
                 <th>Item No.</th>
                 <th>Name</th>
                 <th>Price</th>
@@ -121,7 +120,9 @@ const Page: React.FC = () => {
             <p className="text-sm md:text-lg font-bold mb-2">
               Total price: ${totalCartPrice.toFixed(2)}
             </p>
-            <button className="btn md:btn-xl" onClick={() => createPayment()}>Check out</button>
+            <button className="btn md:btn-xl" onClick={() => createPayment()}>
+              Check out
+            </button>
           </div>
         </div>
       </div>
