@@ -87,3 +87,32 @@ func CreateKeyNameProductImage(data *entities.ProductDataFormat, imageType strin
 	contentType := fmt.Sprintf("image/%v", imageType)
 	return keyName, contentType
 }
+
+// func DeleteOldS3ObjectProfile(data *entities.UserDataFormat, imageType string) error {
+
+// 	creds := credentials.NewStaticCredentials(os.Getenv("AWS_ACCESS_KEY_ID"), os.Getenv("AWS_SECRET_ACCESS_KEY"), "")
+// 	sess, err := session.NewSession(&aws.Config{
+// 		Region:      aws.String(os.Getenv("AWS_REGION")),
+// 		Credentials: creds,
+// 	})
+// 	if err != nil {
+// 		return err
+// 	}
+
+// 	svc := s3.New(sess)
+
+// 	bucketName := os.Getenv("AWS_BUCKET")
+
+// 	email := strings.ToLower(data.Email)
+// 	name := strings.ToLower(data.Firstname)
+// 	oldFileName := fmt.Sprintf("picture/%v/%v.%v", email, name, imageType)
+
+// 	_, err = svc.DeleteObject(&s3.DeleteObjectInput{
+// 		Bucket: aws.String(bucketName),
+// 		Key:    aws.String(oldFileName),
+// 	})
+// 	if err != nil {
+// 		return err
+// 	}
+// 	return nil
+// }
